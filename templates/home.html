@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mobile UI Uzum Style</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: #e5e5e5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .phone {
+        width: 360px;
+        height: 720px;
+        background: #000;
+        border-radius: 40px;
+        padding: 12px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        position: relative;
+        border: 4px solid #333;
+      }
+
+      .screen {
+        width: 100%;
+        height: 100%;
+        background: #ffffff;
+        border-radius: 28px;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* --- TOP BAR --- */
+      .top-bar {
+        padding: 25px 15px 15px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #fff;
+        z-index: 10;
+      }
+
+      .filter-btn {
+        width: 45px;
+        height: 45px;
+        background: #fff;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        color: #1a1a1a;
+        font-size: 18px;
+        transition: all 0.2s ease;
+        border: 1px solid #f0f0f0;
+      }
+
+      .filter-btn.active-style {
+        background: #6366f1;
+        color: #fff;
+      }
+
+      .search-box {
+        flex: 1;
+        background: #f1f1f2;
+        border-radius: 10px;
+        padding: 10px 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .search-box input {
+        border: none;
+        background: none;
+        outline: none;
+        width: 100%;
+      }
+
+      /* --- SIDEBAR --- */
+      .sidebar {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 80%;
+        height: 100%;
+        background: #fff;
+        z-index: 100;
+        transition: 0.4s;
+        padding: 60px 20px;
+        border-top-right-radius: 30px;
+        border-bottom-right-radius: 30px;
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+      }
+      .sidebar.active {
+        left: 0;
+      }
+      .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        display: none;
+        z-index: 90;
+      }
+      .overlay.active {
+        display: block;
+      }
+
+      /* Sidebar itemlar endi button (tugma) */
+      .side-item {
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        color: #333;
+        text-decoration: none;
+        width: 100%;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 12px;
+        transition: 0.2s;
+      }
+      .side-item:active {
+        background: #f0f0f0;
+      }
+      .side-item i {
+        width: 20px;
+        text-align: center;
+      }
+
+      /* --- MAIN CONTENT --- */
+      .main-content {
+        flex: 1;
+        overflow-y: auto;
+        background: #fff;
+        padding-bottom: 20px;
+      }
+
+      .slider-container {
+        width: 100%;
+        height: 160px;
+        position: relative;
+        overflow: hidden;
+        margin: 10px 0;
+      }
+      .slider-wrapper {
+        display: flex;
+        width: 300%;
+        height: 100%;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .slide {
+        width: 100%;
+        height: 100%;
+        padding: 0 10px;
+      }
+      .slide-img {
+        width: 100%;
+        height: 100%;
+        border-radius: 15px;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 15px;
+        color: white;
+        position: relative;
+      }
+      .slide-img::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+        border-radius: 15px;
+      }
+      .dots {
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 6px;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 50%;
+        transition: 0.3s;
+      }
+      .dot.active {
+        background: #fff;
+        width: 20px;
+        border-radius: 10px;
+      }
+
+      .sale-section {
+        background: #7f4df2;
+        border-radius: 15px;
+        padding: 15px;
+        margin: 0 10px 20px 10px;
+      }
+      .sale-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+        margin-bottom: 12px;
+      }
+
+      /* --- PRODUCT CARDS --- */
+      .product-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 0 10px;
+      }
+      .product-card {
+        background: white;
+        border-radius: 12px;
+        padding-bottom: 12px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #f0f0f0;
+      }
+      .product-img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        border-radius: 10px 10px 0 0;
+        background: #f8f8f8;
+      }
+      .wish-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 18px;
+        color: #666;
+        z-index: 2;
+      }
+      .product-info {
+        padding: 8px 8px 0 8px;
+      }
+      .product-title {
+        font-size: 12px;
+        color: #1f2026;
+        line-height: 1.3;
+        height: 32px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        margin-bottom: 6px;
+      }
+      .price-now {
+        font-weight: 700;
+        font-size: 14px;
+        color: #1f2026;
+        margin-top: -2px;
+      }
+      .add-cart-btn {
+        width: 100%;
+        height: 36px;
+        background: transparent;
+        border: 1px solid #7f4df2;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: #7f4df2;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: 0.2s;
+        margin-top: 4px;
+      }
+
+      /* --- LOAD MORE BUTTON --- */
+      .load-more-container {
+        padding: 20px 15px;
+        display: flex;
+        justify-content: center;
+      }
+      .load-more-btn {
+        width: 100%;
+        padding: 12px;
+        background: #f1f1f2;
+        border: none;
+        border-radius: 12px;
+        color: #1f2026;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+        text-align: center;
+        transition: 0.2s;
+      }
+
+      /* --- BOTTOM NAV --- */
+      .bottom-nav {
+        height: 75px;
+        background: #fff;
+        border-top: 1px solid #eee;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding-bottom: 10px;
+      }
+      .nav-item {
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #8e8e93;
+        flex: 1;
+      }
+      .nav-item.active {
+        color: #6366f1;
+      }
+      .nav-item i {
+        font-size: 22px;
+        margin-bottom: 4px;
+      }
+      .nav-item span {
+        font-size: 10px;
+      }
+
+      .notch {
+        width: 60px;
+        height: 20px;
+        background: #000;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+        z-index: 110;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen">
+        <div class="overlay" id="overlay"></div>
+
+        <div class="sidebar" id="sidebar">
+          <h2 style="margin-bottom: 30px; padding-left: 15px">Menyu</h2>
+          <a href="{% url 'profile' %}" class="side-item">
+            <i class="fa-solid fa-circle-user"></i> Shaxsiy kabinet
+          </a>
+          <button class="side-item">
+            <i class="fa-solid fa-box"></i> Buyurtmalarim
+          </button>
+          <button class="side-item">
+            <i class="fa-solid fa-heart"></i> Saralanganlar
+          </button>
+          <button class="side-item">
+            <i class="fa-solid fa-headset"></i> Qo'llab-quvvatlash
+          </button>
+          <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee" />
+          <a href="{% url 'profile' %}" class="side-item" style="color: red">
+            <i class="fa-solid fa-right-from-bracket"></i> Chiqish
+          </a>
+        </div>
+
+        <div class="top-bar">
+          <div class="filter-btn" id="filterBtn" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars-staggered"></i>
+          </div>
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass" style="color: #999"></i>
+            <input type="text" placeholder="Qidirish..." />
+          </div>
+        </div>
+
+        <div class="main-content">
+          <div class="slider-container">
+            <div class="slider-wrapper" id="sliderWrapper">
+              <div class="slide">
+                <div class="slide-img" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500');">
+                  <div class="slide-content"><h2>TERRA PRO</h2></div>
+                </div>
+              </div>
+              <div class="slide">
+                <div class="slide-img" style="background-image: url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500');">
+                  <div class="slide-content"><h2>Smart Gadgets</h2></div>
+                </div>
+              </div>
+              <div class="slide">
+                <div class="slide-img" style="background-image: url('https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=500');">
+                  <div class="slide-content"><h2>Nike Air</h2></div>
+                </div>
+              </div>
+            </div>
+            <div class="dots">
+              <div class="dot active"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+
+          <div class="sale-section">
+            <div class="sale-header"><h3>Hafta chegirmalari</h3></div>
+            <div class="product-grid" style="padding: 0">
+              <div class="product-card">
+                <img class="product-img" src="https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=300" style="height: 120px" />
+                <div class="product-info">
+                  <span class="price-now">4 384 400 sum</span>
+                </div>
+              </div>
+              <div class="product-card">
+                <img class="product-img" src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=300" style="height: 120px" />
+                <div class="product-info">
+                  <span class="price-now">126 490 sum</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="padding: 0 15px; margin-bottom: 12px; font-size: 18px">Siz uchun tavsiyalar</h3>
+
+          <div class="product-grid">
+            {% for i in page_obj %}
+            <div class="product-card">
+              <i class="fa-regular fa-heart wish-icon"></i>
+              {% if i.images.all %}
+              <img class="product-img" src="{{ i.images.all.0.image.url }}" />
+              {% endif %}
+              <div class="product-info">
+                <p class="product-title">{{ i.name }}</p>
+                <div class="price-container">
+                  <span class="price-now">{{ i.price }} so'm</span>
+                  <button class="add-cart-btn">
+                    <i class="fa-solid fa-cart-plus"></i> Savatga
+                  </button>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <nav class="bottom-nav">
+          <a href="{% url 'home_page' %}" class="nav-item active"><i class="fa-solid fa-house"></i><span>Asosiy</span></a>
+          <a href="#" class="nav-item"><i class="fa-solid fa-magnifying-glass"></i><span>Katalog</span></a>
+          <a href="#" class="nav-item"><i class="fa-solid fa-bag-shopping"></i><span>Savat</span></a>
+          <a href="#" class="nav-item"><i class="fa-regular fa-heart"></i><span>Istaklar</span></a>
+          <a href="{% url 'profile' %}" class="nav-item"><i class="fa-regular fa-user"></i><span>Profil</span></a>
+        </nav>
+      </div>
+    </div>
+
+    <script>
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+        const filterBtn = document.getElementById("filterBtn");
+        sidebar.classList.toggle("active");
+        overlay.classList.toggle("active");
+        filterBtn.classList.toggle("active-style");
+      }
+      document.getElementById("overlay").onclick = toggleSidebar;
+
+      const wrapper = document.getElementById("sliderWrapper");
+      const dots = document.querySelectorAll(".dot");
+      let currentIndex = 0;
+      setInterval(() => {
+        currentIndex = (currentIndex + 1) % 3;
+        wrapper.style.transform = `translateX(-${currentIndex * 33.333}%)`;
+        dots.forEach((dot, index) =>
+          dot.classList.toggle("active", index === currentIndex),
+        );
+      }, 4000);
+    </script>
+  </body>
+</html>

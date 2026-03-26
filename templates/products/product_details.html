@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} - Tafsilotlar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #f4f4f6; display: flex; justify-content: center; min-height: 100vh; }
+
+        .phone { width: 360px; background: #fff; min-height: 100vh; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+
+        /* Header */
+        .header { position: sticky; top: 0; background: #fff; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 100; border-bottom: 1px solid #eee; }
+        .back-btn { font-size: 20px; color: #1f2026; cursor: pointer; text-decoration: none; }
+        
+        /* Image Section */
+        .product-image-container { width: 100%; height: 360px; background: #fff; position: relative; }
+        .product-image-container img { width: 100%; height: 100%; object-fit: contain; }
+        .wish-btn { position: absolute; top: 15px; right: 15px; background: #fff; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); color: #8b8e99; }
+
+        /* Info Section */
+        .product-info { padding: 20px; }
+        .price-now { font-size: 24px; font-weight: 700; color: #1f2026; margin-bottom: 8px; }
+        .product-name { font-size: 18px; color: #1f2026; line-height: 1.4; margin-bottom: 15px; }
+        
+        .delivery-info { background: #f1f1f2; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .delivery-info i { color: #7f4df2; }
+        .delivery-info span { font-size: 13px; color: #1f2026; }
+
+        .description-title { font-weight: 600; font-size: 16px; margin-bottom: 10px; }
+        .description-text { font-size: 14px; color: #4d4e59; line-height: 1.6; }
+
+        /* Bottom Action Bar */
+        .bottom-bar { position: fixed; bottom: 0; width: 360px; background: #fff; padding: 15px; display: flex; gap: 10px; border-top: 1px solid #eee; }
+        .add-to-cart { flex: 1; background: #7f4df2; color: #fff; border: none; padding: 15px; border-radius: 12px; font-weight: 600; font-size: 15px; cursor: pointer; }
+        .buy-now { flex: 1; background: #fff; color: #7f4df2; border: 1.5px solid #7f4df2; padding: 15px; border-radius: 12px; font-weight: 600; font-size: 15px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="phone">
+        <div class="header">
+            <a href="javascript:history.back()" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <span style="font-weight: 600;">Mahsulot</span>
+            <i class="fa-solid fa-share-nodes" style="font-size: 18px; color: #8b8e99;"></i>
+        </div>
+
+        <div class="product-image-container">
+            <img src="{{ i.images.all.0.image.url }}" alt="Product Image">
+            <div class="wish-btn">
+                <i class="fa-regular fa-heart"></i>
+            </div>
+        </div>
+
+        <div class="product-info">
+            <div class="price-now">{{ i.price }} so'm</div>
+            <h1 class="product-name">{{ i.name }}</h1>
+
+            <div class="delivery-info">
+                <i class="fa-solid fa-truck-fast"></i>
+                <span>1 kun ichida bepul yetkazib beramiz</span>
+            </div>
+
+            <h3 class="description-title">Mahsulot haqida qisqacha:</h3>
+            <p class="description-text">
+                {{ i.description|default:"Bu mahsulot haqida ma'lumot kiritilmagan." }}
+            </p>
+            
+            <div style="height: 100px;"></div> </div>
+
+        <div class="bottom-bar">
+            <button class="buy-now">Hozir sotib olish</button>
+            <button class="add-to-cart">
+                <i class="fa-solid fa-cart-plus"></i> Savatga
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>
