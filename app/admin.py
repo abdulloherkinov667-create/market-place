@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UzumProduct, UzumProductImage, Kategoriy
+from .models import UzumProduct, UzumProductImage, Kategoriy, ShopingModel
 
 
 
@@ -17,4 +17,9 @@ class UzumProductImageAdmin(admin.ModelAdmin):
 @admin.register(Kategoriy)
 class KategoriyAdmin(admin.ModelAdmin):
     list_display = ['name']
+    
+    
+@admin.register(ShopingModel)
+class Shoping_Admin(admin.ModelAdmin):
+    list_display = ['product', 'user']
         

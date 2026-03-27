@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 from app.views import (
     home_page, profile_page, registratsiya, login_viuw,
-    product_details
+    ProductDetailsViuw, logout_html, user_logout, ShopingCartHtml
 )
 
 urlpatterns = [
@@ -30,14 +30,20 @@ urlpatterns = [
     
     #product
     path('', home_page, name='home_page'),
-    path('product_details/', product_details, name='product_details'),
+    path('product/<slug:slug>/', ProductDetailsViuw.as_view(), name='product_details'),
+    # path('product_details/', product_details, name='product_details'),
     
     #profil
     path('profil/', profile_page, name='profile'),
     
+    #shop cart 
+    path('shoping_cart/', ShopingCartHtml.as_view(), name='Shoping_Cart_Html'),
+    
     #registratsiya
     path('registratsiya/', registratsiya, name='registratsiya'),
     path('login_viuw/', login_viuw, name='login_viuw'),
+    path('logout/', logout_html, name='logout_html'),
+    path('user_logout/', user_logout, name='user_logout'),
 ]
 
 if settings.DEBUG:

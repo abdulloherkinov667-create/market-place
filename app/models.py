@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 
 
 class BaseCreatedModel(models.Model):
@@ -67,10 +68,16 @@ class UzumProductImage(BaseCreatedModel):
         return f"{self.product.name} image"
     
 
+#shoping cart model
+class ShopingModel(BaseCreatedModel):
+    product = models.ForeignKey(UzumProduct, on_delete=models.CASCADE, related_name='cart_list')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='my_carts')
+    
+    def __str__(self):
+        return self.user.username
 
 #user model
 class Users(AbstractUser):
-    
     class UserTypes(models.TextChoices):
         Admin = 'Admin', 'Admin'
         CLENT = 'Clent', 'Mijoz'
