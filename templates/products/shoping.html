@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% block main %}
+{% extends 'base.html' %} 
+{% block main %}
+{% load humanize %}
 <style>
   .cart-container {
     padding: 15px;
@@ -133,57 +135,32 @@
     <div class="cart-header"><h2>Savat</h2></div>
 
     <div class="cart-items-list">
-      <div class="cart-item" data-price="120000">
-        <img
-          src="https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=200"
-          class="cart-item-img"
-        />
-        <div class="cart-item-info">
-          <div>
-            <p class="cart-item-title">Mars Geymer klaviaturasi</p>
-            <p class="cart-item-price">
-              <span class="item-total-price">120 000</span> so'm
-            </p>
-          </div>
-          <div class="item-controls-row">
-            <div class="quantity-group">
-              <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
-              <span class="qty-num">1</span>
-              <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+        {% for item in cart_items %}
+        <div class="cart-item" data-price="{{ item.product.price }}">
+            <img
+              src="{{ item.product.images.all.0.image.url }}"
+              class="cart-item-img"
+            />
+            <div class="cart-item-info">
+              <div>
+                <p class="cart-item-title">{{ item.product.name }}</p>
+                <p class="cart-item-price">
+                  <span class="item-total-price">{{ item.product.price |intcomma }}</span> so'm
+                </p>
+              </div>
+              <div class="item-controls-row">
+                <div class="quantity-group">
+                  <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                  <span class="qty-num">1</span>
+                  <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                </div>
+                <a href="{% url 'delete_product_cart' item.id %}" class="fa-regular fa-trash-can remove-icon-btn" onclick="disintegrateItem(this)"></a>
+              </div>
             </div>
-            <i
-              class="fa-regular fa-trash-can remove-icon-btn"
-              onclick="disintegrateItem(this)"
-            ></i>
-          </div>
         </div>
-      </div>
-
-      <div class="cart-item" data-price="350000">
-        <img
-          src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200"
-          class="cart-item-img"
-        />
-        <div class="cart-item-info">
-          <div>
-            <p class="cart-item-title">Smart Watch Series 8</p>
-            <p class="cart-item-price">
-              <span class="item-total-price">350 000</span> so'm
-            </p>
-          </div>
-          <div class="item-controls-row">
-            <div class="quantity-group">
-              <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
-              <span class="qty-num">1</span>
-              <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
-            </div>
-            <i
-              class="fa-regular fa-trash-can remove-icon-btn"
-              onclick="disintegrateItem(this)"
-            ></i>
-          </div>
-        </div>
-      </div>
+        {% empty %}
+        <p style="text-align: center; padding: 20px;">Savatingiz bo'sh</p>
+        {% endfor %}
     </div>
   </div>
 </div>
@@ -191,9 +168,9 @@
 <div class="checkout-footer">
   <div class="summary-line">
     <span>Jami:</span>
-    <span class="total-price" id="grand-total">470 000 so'm</span>
+    <span class="total-price" id="grand-total">120 000 so'm</span>
   </div>
-  <button class="order-btn">Rasmiylashtirish</button>
+  <a href="{% url 'rasmiylashtirish_prod' %}"><button class="order-btn">Rasmiylashtirish</button></a>
 </div>
 
 <script>
@@ -223,34 +200,25 @@
       formatMoney(total) + " so'm";
   }
 
-  // MAYDALANIB KETISH ANIMATSIYASI
   function disintegrateItem(btn) {
     const item = btn.closest(".cart-item");
     const rect = item.getBoundingClientRect();
-    const container = document.getElementById("cartContainer");
-
-    // Elementning rangini aniqlash (asosan oq va binafsha)
     const colors = ["#7f4df2", "#ffffff", "#f1f1f2", "#1f2026"];
 
-    // 30 ta mayda zarracha yaratish
     for (let i = 0; i < 40; i++) {
       const p = document.createElement("div");
       p.className = "particle";
-
-      // Tasodifiy o'lcham va rang
       const size = Math.random() * 6 + 2;
       p.style.width = size + "px";
       p.style.height = size + "px";
       p.style.background = colors[Math.floor(Math.random() * colors.length)];
 
-      // Boshlang'ich pozitsiya (trash icon atrofida)
       const iconRect = btn.getBoundingClientRect();
       p.style.left = iconRect.left - rect.left + 15 + "px";
       p.style.top = iconRect.top - rect.top + 15 + "px";
 
       item.appendChild(p);
 
-      // Harakat animatsiyasi
       const angle = Math.random() * Math.PI * 2;
       const velocity = Math.random() * 100 + 50;
       const tx = Math.cos(angle) * velocity;
@@ -268,11 +236,10 @@
           duration: 600 + Math.random() * 400,
           easing: "cubic-bezier(0, .9, .57, 1)",
           fill: "forwards",
-        },
+        }
       );
     }
 
-    // Asosiy elementni yo'qotish
     item.style.transition = "all 0.5s ease";
     item.style.transform = "scale(0.8) translateY(10px)";
     item.style.opacity = "0";
@@ -283,5 +250,6 @@
       calculateTotal();
     }, 500);
   }
+document.addEventListener('DOMContentLoaded', calculateTotal);
 </script>
 {% endblock main %}

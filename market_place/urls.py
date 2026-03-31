@@ -21,7 +21,9 @@ from django.conf.urls.static import static
 
 from app.views import (
     home_page, profile_page, registratsiya, login_viuw,
-    ProductDetailsViuw, logout_html, user_logout, ShopingCartHtml
+    ProductDetailsViuw, logout_html, user_logout, ShopingCartHtml,
+    shoping_cart_create, tolov_usullari, delete_product_cart, rasmiylashtirish_prod,
+    rasmiylashtirish_prod, upgdate_rasmiylash, order_html, order_details
 )
 
 urlpatterns = [
@@ -31,13 +33,24 @@ urlpatterns = [
     #product
     path('', home_page, name='home_page'),
     path('product/<slug:slug>/', ProductDetailsViuw.as_view(), name='product_details'),
-    # path('product_details/', product_details, name='product_details'),
+    path('rasmiylashtirish/', rasmiylashtirish_prod, name='rasmiylashtiri_sh'),
+    path('upgdate_rasmiylash/<int:pk>/', upgdate_rasmiylash, name='upgdate_rasmiylash'),    
+    
+    #order html
+    path('order_html/', order_html, name='order_html'),
+    path('order_details/', order_details, name='order_details'),
     
     #profil
     path('profil/', profile_page, name='profile'),
     
     #shop cart 
     path('shoping_cart/', ShopingCartHtml.as_view(), name='Shoping_Cart_Html'),
+    path('shoping_cart_create/', shoping_cart_create, name='shoping_cart_create'),
+    path('delete_product_cart/<int:pk>/', delete_product_cart, name='delete_product_cart'),
+    path('rasmiylashtirish_prod/', rasmiylashtirish_prod, name='rasmiylashtirish_prod'),
+    
+    #tolov usullari
+    path('tolov_usullari/', tolov_usullari, name='tolov_usullari'),
     
     #registratsiya
     path('registratsiya/', registratsiya, name='registratsiya'),

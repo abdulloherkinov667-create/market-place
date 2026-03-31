@@ -7,11 +7,11 @@
       flex: 1;
       overflow-y: auto;
       background: #f8f9fa;
-      scrollbar-width: none; /* Firefox uchun */
+      scrollbar-width: none;
     }
     
     .main-content::-webkit-scrollbar {
-      display: none; /* Chrome/Safari uchun scrollni yashirish */
+      display: none;
     }
 
     .profile-header {
@@ -32,7 +32,7 @@
       width: 100%; 
       height: 100%;
       border-radius: 50%;
-      border: 3px solid #7f4df2; /* Uzum binafsha rangi */
+      border: 3px solid #7f4df2;
       object-fit: cover;
     }
 
@@ -58,6 +58,7 @@
       margin-top: 10px; 
     }
 
+    /* Barcha menyu elementlari uchun umumiy stil */
     .settings-item {
       display: flex; 
       align-items: center; 
@@ -65,11 +66,11 @@
       border-bottom: 1px solid #f8f8f8; 
       cursor: pointer;
       transition: background 0.2s;
-      text-decoration: none; /* Agar <a> tegi ishlatilsa */
+      text-decoration: none !important;
     }
 
-    .settings-item:active {
-      background: #f1f1f2; /* Bosilganda effekt */
+    .settings-item:hover, .settings-item:active {
+      background: #f1f1f2;
     }
 
     .settings-item i:first-child { 
@@ -90,7 +91,6 @@
       font-size: 12px; 
     }
 
-    /* Chiqish tugmasi uchun maxsus rang (ixtiyoriy) */
     .logout-item i:first-child {
         color: #ff4d4d;
     }
@@ -102,37 +102,43 @@
             <img src="https://ui-avatars.com/api/?name={{ request.user }}&background=7f4df2&color=fff" alt="User">
             <div class="edit-icon"><i class="fa-solid fa-camera"></i></div>
         </div>
-        <h2 style="font-size: 20px;">{{ request.user.username|default:"Mehmon" }}</h2>
-        <p style="color: #8b8e99; font-size: 14px;">{{ request.user.email|default:"user@example.com" }}</p>
+        <h2 style="font-size: 20px; margin: 0;">{{ request.user.username|default:"Mehmon" }}</h2>
+        <p style="color: #8b8e99; font-size: 14px; margin: 5px 0 0;">{{ request.user.email|default:"user@example.com" }}</p>
     </div>
 
     <div class="settings-list">
-        <div class="settings-item">
+        <a href="#" class="settings-item">
             <i class="fa-solid fa-user-gear"></i>
             <span>Shaxsiy ma'lumotlar</span>
             <i class="fa-solid fa-chevron-right chevron"></i>
-        </div>
+        </a>
 
-        <div class="settings-item">
+        <a href="{% url 'home_page' %}" class="settings-item">
+            <i class="fa-solid fa-house-user"></i>
+            <span>Asosiy</span>
+            <i class="fa-solid fa-chevron-right chevron"></i>
+        </a>
+
+        <a href="#" class="settings-item">
             <i class="fa-solid fa-location-dot"></i>
             <span>Yetkazib berish manzillari</span>
             <i class="fa-solid fa-chevron-right chevron"></i>
-        </div>
+        </a>
 
-        <div class="settings-item">
+        <a href="{% url 'tolov_usullari' %}" class="settings-item">
             <i class="fa-solid fa-credit-card"></i>
             <span>To'lov usullari</span>
             <i class="fa-solid fa-chevron-right chevron"></i>
-        </div>
+        </a>
 
-        <div class="settings-item">
+        <a href="#" class="settings-item">
             <i class="fa-solid fa-shield-halved"></i>
             <span>Xavfsizlik</span>
             <i class="fa-solid fa-chevron-right chevron"></i>
-        </div>
+        </a>
         
-        <a href="{% url 'logout_html' %}" class="settings-item logout-item" style="text-decoration: none;">
-            <i class="fa-solid fa-right-from-bracket" style="color: #ff4d4d;"></i>
+        <a href="{% url 'logout_html' %}" class="settings-item logout-item">
+            <i class="fa-solid fa-right-from-bracket"></i>
             <span style="color: #ff4d4d;">Tizimdan chiqish</span>
             <i class="fa-solid fa-chevron-right chevron"></i>
         </a>

@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<style>
+    .main-content {
+        flex: 1;
+        background: #f8f9fa;
+        min-height: 100vh;
+        padding-bottom: 50px;
+    }
+
+    .page-header {
+        background: #fff;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .back-btn {
+        color: #1f2026;
+        font-size: 18px;
+        margin-right: 15px;
+        text-decoration: none;
+    }
+
+    .card-list {
+        padding: 15px;
+    }
+
+    /* Bank kartasi dizayni */
+    .bank-card {
+        background: linear-gradient(135deg, #7f4df2 0%, #5a29cc 100%);
+        border-radius: 16px;
+        padding: 20px;
+        color: #fff;
+        position: relative;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(127, 77, 242, 0.3);
+        overflow: hidden;
+    }
+
+    .bank-card::after {
+        content: "";
+        position: absolute;
+        top: -20px;
+        right: -20px;
+        width: 100px;
+        height: 100px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+
+    .card-type {
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 15px;
+    }
+
+    .card-number {
+        font-size: 20px;
+        letter-spacing: 2px;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-holder {
+        font-size: 12px;
+        opacity: 0.8;
+    }
+
+    .delete-card {
+        color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        font-size: 18px;
+    }
+
+    /* Yangi karta qo'shish tugmasi */
+    .add-card-btn {
+        background: #fff;
+        border: 2px dashed #7f4df2;
+        border-radius: 16px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #7f4df2;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        width: 100%;
+    }
+
+    .add-card-btn:hover {
+        background: #f3f0ff;
+    }
+
+    .add-card-btn i {
+        margin-right: 10px;
+    }
+
+    .info-text {
+        padding: 0 20px;
+        font-size: 13px;
+        color: #8b8e99;
+        text-align: center;
+    }
+</style>
+
+<div class="main-content">
+    <div class="page-header">
+        <a href="{% url 'profile' %}" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <h2 style="font-size: 18px; margin: 0;">To'lov usullari</h2>
+    </div>
+
+    <div class="card-list">
+        <div class="bank-card">
+            <div class="card-type">Uzcard / Humo</div>
+            <span class="card-number">**** **** **** 8841</span>
+            <div class="card-footer">
+                <div>
+                    <div class="card-holder">Karta egasi</div>
+                    <div style="font-weight: 500;">{{ request.user.username|upper }}</div>
+                </div>
+                <div class="delete-card">
+                    <i class="fa-solid fa-trash-can"></i>
+                </div>
+            </div>
+        </div>
+
+        <a href="#" class="add-card-btn">
+            <i class="fa-solid fa-plus"></i>
+            Yangi karta qo'shish
+        </a>
+    </div>
+
+    <div class="info-text">
+        <p><i class="fa-solid fa-lock" style="margin-right: 5px;"></i> To'lov ma'lumotlari xavfsiz himoyalangan va Uzum qoidalariga muvofiq saqlanadi.</p>
+    </div>
+</div>
+
+<script>
+    // Karta o'chirish tugmasi bosilganda (Oddiy effekt uchun)
+    document.querySelectorAll('.delete-card').forEach(item => {
+        item.addEventListener('click', function(e) {
+            if(confirm("Ushbu to'lov usulini o'chirmoqchimisiz?")) {
+                this.closest('.bank-card').style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock main %}

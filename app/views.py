@@ -1,16 +1,13 @@
-from django.shortcuts import render
-from .models import UzumProduct
+from django.shortcuts import render, redirect, get_list_or_404
+from django.contrib import messages
+from .models import UzumProduct, ShopingModel, Users, Order, OrderItem
 from django.core.paginator import Paginator
 from django.views.generic import (
     ListView, TemplateView, DetailView
 )
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from .models import UzumProduct
-from .models import Users
-from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, get_list_or_404
 
 
 #home html uchun
@@ -38,9 +35,27 @@ class ProductDetailsViuw(DetailView):
     
 
 #choping ni htmlini korsatish uchun
-class ShopingCartHtml(LoginRequiredMixin, TemplateView):
+class ShopingCartHtml(LoginRequiredMixin, ListView): 
+    model = ShopingModel
     template_name = 'products/shoping.html'
-    login_url =  'login_viuw'
+    context_object_name = 'cart_items'
+    login_url = 'login_viuw'
+
+    def get_queryset(self):
+        return ShopingModel.objects.filter(user=self.request.user).select_related('product')
+    
+    
+#shoping cartdagi malumotlarni ochirish uchun
+@login_required(login_url='login_viuw')
+def delete_product_cart(request, pk):
+    product_id = pk
+    user_id = request.user.id
+    db_cart = ShopingModel.objects.filter(id=product_id, user_id=user_id)
+    
+    if db_cart.exists():
+        db_cart.delete()
+        return redirect('Shoping_Cart_Html')
+    return redirect('Shoping_Cart_Html')
     
 
 #shoping cartga qoshish uchun
@@ -51,9 +66,80 @@ def shoping_cart_create(request):
         data = request.POST
         product_id = data.get('uzumproduct')
         user_id = request.user.id
+        print(product_id, user_id)
+        
+        new_cart = ShopingModel.objects.create(
+            product_id=product_id,
+            user_id=user_id
+        )
+        new_cart.save()
+        return redirect('Shoping_Cart_Html')
+    
+
+#rasmylashtirish html
+@login_required()
+def rasmiylashtirish_prod(request):
+    new_order = Order.objects.create(user_id = request.user.id)
+    new_order.save()
+    
+    order_id = new_order.id
+    order_item_list = request.user.my_carts
+    
+    for i in order_item_list.all():
+        new_order_item = OrderItem.objects.create(
+            order_id = order_id,
+            count = 1,
+            product_id = i.product_id
+        )
+        
+        new_order_item.save()
+        cart_delete = ShopingModel.objects.filter(id=i.id)
+        cart_delete.delete()
+        
+    return render(request, 'products/rasmiyla_sh.html', context={ "order": new_order })
+
+
+#upgdate qilish jarayoni
+def upgdate_rasmiylash(request, pk):
+    if request.method == 'POST':
+        data = request.POST
+        
+        phone = data.get('phone_number')
+        address = data.get('address')
+        description = data.get('notes')
+        payment_method = data.get('payment_method')
+        
+        db_order = Order.objects.filter(id=pk).first()
+        
+        if db_order:
+            db_order.phone = phone
+            db_order.address = address
+            db_order.description = description
+            db_order.payment_method = payment_method
+            db_order.is_status = Order.OrderStatusChoice.CONFIRMED
+            db_order.save()
+            
+            from django.contrib import messages
+            messages.success(request, "Buyurtmangiz muvaffaqiyatli rasmiylashtirildi! Tez orada siz bilan bog'lanamiz.")
+        
+        return redirect('home_page')
     
     
-    return render(request, 'products/shoping.html')
+#tolov usullari html
+def tolov_usullari(request):
+    return render(request, 'userlar/tolov_usul.html')
+
+
+#order html uchun
+@login_required(login_url='login_viuw')
+def order_html(request):
+    return render(request, 'products/order_list.html')   
+
+
+#order details html
+@login_required(login_url='login_viuw')
+def order_details(request):
+    return render(request, 'products/order_details.html')
 
 
 #logout html
@@ -78,7 +164,6 @@ def registratsiya(request):
 def user_logout(request):
     logout(request)
     return redirect('login_viuw')
-
 
 
 #login html uchun

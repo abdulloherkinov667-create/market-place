@@ -370,25 +370,48 @@
         <div class="overlay" id="overlay"></div>
 
         <div class="sidebar" id="sidebar">
-          <h2 style="margin-bottom: 30px; padding-left: 15px">Menyu</h2>
-          <a href="{% url 'profile' %}" class="side-item">
-            <i class="fa-solid fa-circle-user"></i> Shaxsiy kabinet
-          </a>
-          <button class="side-item">
-            <i class="fa-solid fa-box"></i> Buyurtmalarim
-          </button>
-          <button class="side-item">
-            <i class="fa-solid fa-heart"></i> Saralanganlar
-          </button>
-          <button class="side-item">
-            <i class="fa-solid fa-headset"></i> Qo'llab-quvvatlash
-          </button>
-          <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee" />
-          <a href="{% url 'logout_html' %}" class="side-item" style="color: red">
-            <i class="fa-solid fa-right-from-bracket"></i> Chiqish
-          </a>
-          
-        </div>
+          {% if request.user.is_authenticated %}
+              <h2 style="margin-bottom: 30px; padding-left: 15px">Menyu</h2>
+              
+              <a href="{% url 'profile' %}" class="side-item">
+                  <i class="fa-solid fa-circle-user"></i> Shaxsiy kabinet
+              </a>
+
+              <a href="{% url 'home_page' %}" class="side-item">
+                  <i class="fa-solid fa-house-user"></i> Asosiyga
+              </a>
+
+              <a href="{% url 'order_html' %}" class="side-item">
+                  <i class="fa-solid fa-house-user"></i> Buyurtmalarim
+              </a>
+
+              <button class="side-item">
+                  <i class="fa-solid fa-heart"></i> Saralanganlar
+              </button>
+
+              <button class="side-item">
+                  <i class="fa-solid fa-headset"></i> Qo'llab-quvvatlash
+              </button>
+
+              <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee" />
+
+              <a href="{% url 'logout_html' %}" class="side-item" style="color: red">
+                  <i class="fa-solid fa-right-from-bracket"></i> Chiqish
+              </a>
+
+          {% else %}
+              <h2 style="margin-bottom: 30px; padding-left: 15px">Xush kelibsiz</h2>
+              
+              <a href="{% url 'registratsiya' %}" class="side-item">
+                  <i class="fa-solid fa-circle-user"></i> Registratsiya / Kirish
+              </a>
+
+              <a href="{% url 'login_viuw' %}" class="side-item" style="text-decoration: none;">
+                  <i class="fa-solid fa-right-to-bracket"></i> 
+                  <span>Login qilish</span>
+              </a>
+          {% endif %} 
+          </div>
 
         <div class="top-bar">
           <div class="filter-btn" id="filterBtn" onclick="toggleSidebar()">
@@ -406,7 +429,7 @@
         <nav class="bottom-nav">
           <a href="{% url 'home_page' %}" class="nav-item active"><i class="fa-solid fa-house"></i><span>Asosiy</span></a>
           <a href="#" class="nav-item"><i class="fa-solid fa-magnifying-glass"></i><span>Katalog</span></a>
-          <a href="{% url 'shoping_cart' %}" class="nav-item"><i class="fa-solid fa-bag-shopping"></i><span>Savat</span></a>
+          <a href="{% url 'Shoping_Cart_Html' %}" class="nav-item"><i class="fa-solid fa-bag-shopping"></i><span>Savat</span></a>
           <a href="#" class="nav-item"><i class="fa-regular fa-heart"></i><span>Istaklar</span></a>
           <a href="{% url 'profile' %}" class="nav-item"><i class="fa-regular fa-user"></i><span>Profil</span></a>
         </nav>

@@ -1,7 +1,17 @@
 {% extends 'base.html' %}
 {% block main %}
+{% load humanize %}
 
 <div class="main-content">
+  {% if messages %}
+
+    <div class="alert-wrapper">
+      {% for message in messages %}
+        <div class="fade-alert" id="liveMessage">{{ message }}</div>
+      {% endfor %}
+    </div>
+
+  {% endif %}
   <div class="slider-container">
     <div class="slider-wrapper" id="sliderWrapper">
       <div class="slide">
@@ -9,17 +19,7 @@
           <div class="slide-content"><h2>TERRA PRO</h2></div>
         </div>
       </div>
-      <div class="slide">
-        <div class="slide-img" style="background-image: url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500');">
-          <div class="slide-content"><h2>Smart Gadgets</h2></div>
-        </div>
       </div>
-      <div class="slide">
-        <div class="slide-img" style="background-image: url('https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=500');">
-          <div class="slide-content"><h2>Nike Air</h2></div>
-        </div>
-      </div>
-    </div>
     <div class="dots">
       <div class="dot active"></div>
       <div class="dot"></div>
@@ -27,59 +27,139 @@
     </div>
   </div>
 
-  <div class="sale-section">
-    <div class="sale-header"><h3>Hafta chegirmalari</h3></div>
-    <div class="product-grid" style="padding: 0">
-      <div class="product-card">
-        <img class="product-img" src="https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=300" style="height: 120px" />
-        <div class="product-info">
-          <span class="price-now">4 384 400 sum</span>
-        </div>
-      </div>
-      <div class="product-card">
-        <img class="product-img" src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=300" style="height: 120px" />
-        <div class="product-info">
-          <span class="price-now">126 490 sum</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <h3 style="padding: 0 15px; margin-bottom: 12px; font-size: 18px">Siz uchun tavsiyalar</h3>
 
   <div class="product-grid">
     {% for i in page_obj %}
-    <div class="product-card" style="position: relative; text-decoration: none;">
+    <div class="product-card">
       
-      <i class="fa-regular fa-heart wish-icon" style="z-index: 3;"></i>
+      <i class="fa-regular fa-heart wish-icon"></i>
 
-      <a href="{% url 'product_details' i.slug%}" style="text-decoration: none; color: inherit; display: block;">
+      <a href="{% url 'product_details' i.slug %}" style="text-decoration: none; color: inherit; display: block;">
         {% if i.images.all %}
-        <img class="product-img" src="{{ i.images.all.0.image.url }}" />
+          <img class="product-img" src="{{ i.images.all.0.image.url }}" alt="{{ i.name }}" />
         {% endif %}
         <div class="product-info">
           <p class="product-title">{{ i.name }}</p>
           <div class="price-container">
-            <span class="price-now">{{ i.price }} so'm</span>
+            <span class="price-now">{{ i.price|intcomma }} so'm</span>
           </div>
         </div>
       </a>
 
       <div style="padding: 0 8px 8px 8px;">
-          <button class="add-cart-btn" style="width: 100%; position: relative; z-index: 2;">
-            <i class="fa-solid fa-cart-plus"></i> Savatga
+        <form action="{% url 'shoping_cart_create' %}" method="POST">
+          {% csrf_token %}
+          
+          <input type="hidden" name="uzumproduct" value="{{ i.id }}">
+          <input type="hidden" name="user" value="{{ request.user.id }}">
+
+          <button type="submit" class="add-cart-btn">
+            <i class="fa-solid fa-cart-plus"></i>
+            <span>Savatga</span>
           </button>
+        </form>
       </div>
+
     </div>
     {% endfor %}
   </div>
 </div>
 
 <style>
+  /* Karta havolasi stili */
   .product-card a {
     color: inherit;
     text-decoration: none;
+    display: block;
+  }
+
+  /* Savatga tugmasi uchun maxsus stil (Uzum uslubida) */
+  .add-cart-btn {
+    width: 100%;
+    height: 40px;
+    background: transparent;
+    border: 1px solid #7f4df2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #7f4df2;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  /* Tugma bosilgandagi effekt */
+  .add-cart-btn:active {
+    background: #7f4df2;
+    color: #fff;
+    transform: scale(0.96);
+  }
+
+  .add-cart-btn i {
+    font-size: 16px;
+  }
+
+  .main-content {
+    position: relative;
+  }
+
+  .alert-wrapper {
+    position: absolute;
+    right: 14px;
+    top: 12px;
+    width: calc(100% - 28px);
+    max-width: 340px;
+    z-index: 999;
+  }
+
+  .fade-alert {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: slideIn 0.4s ease-in-out forwards;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+  }
+
+  @keyframes slideIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideOut {
+    to {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
   }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const alertEl = document.querySelector('.fade-alert');
+    if (!alertEl) return;
+
+    setTimeout(function () {
+      alertEl.style.animation = 'slideOut 0.4s ease-in-out forwards';
+      setTimeout(function () {
+        if (alertEl.parentNode) {
+          alertEl.parentNode.removeChild(alertEl);
+        }
+      }, 400);
+    }, 5000);
+  });
+</script>
 
 {% endblock main %}
