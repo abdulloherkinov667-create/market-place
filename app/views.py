@@ -73,7 +73,9 @@ def shoping_cart_create(request):
             user_id=user_id
         )
         new_cart.save()
-        return redirect('Shoping_Cart_Html')
+        messages.success(request, "Mahsulot savatga qo'shildi!")
+        
+        return redirect('home_page')
     
 
 #rasmylashtirish html

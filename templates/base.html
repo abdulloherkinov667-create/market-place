@@ -155,6 +155,67 @@
         padding-bottom: 20px;
       }
 
+      .alert-wrapper {
+        position: absolute;
+        top: 90px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 40px);
+        max-width: 320px;
+        z-index: 999;
+      }
+
+      .fade-alert {
+        position: relative;
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin-bottom: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        opacity: 0;
+        transform: translateY(-10px);
+        animation: slideIn 0.4s ease-in-out forwards;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+      }
+
+      .fade-alert .alert-text {
+        display: block;
+      }
+
+      .fade-alert .alert-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        background: #2a7f14;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        width: 100%;
+        animation: progressLine 4s linear forwards;
+      }
+
+      @keyframes progressLine {
+        from { width: 100%; }
+        to { width: 0%; }
+      }
+
+      @keyframes slideIn {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideOut {
+        to {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+      }
+
       .slider-container {
         width: 100%;
         height: 160px;
@@ -330,6 +391,25 @@
         align-items: center;
         padding-bottom: 10px;
       }
+      .cart-link {
+        position: relative;
+      }
+      .cart-badge {
+        position: absolute;
+        top: -6px;
+        right: 20px;
+        min-width: 18px;
+        padding: 0 6px;
+        height: 18px;
+        border-radius: 999px;
+        background: #ff3b30;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
       .nav-item {
         text-decoration: none;
         display: flex;
@@ -423,13 +503,30 @@
           </div>
         </div>
 
+        {% if messages %}
+          <div class="alert-wrapper">
+            {% for message in messages %}
+              <div class="fade-alert">
+                <span class="alert-text">{{ message }}</span>
+                <span class="alert-progress"></span>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
         {% block main %}
         {% endblock main %}
 
         <nav class="bottom-nav">
           <a href="{% url 'home_page' %}" class="nav-item active"><i class="fa-solid fa-house"></i><span>Asosiy</span></a>
           <a href="#" class="nav-item"><i class="fa-solid fa-magnifying-glass"></i><span>Katalog</span></a>
-          <a href="{% url 'Shoping_Cart_Html' %}" class="nav-item"><i class="fa-solid fa-bag-shopping"></i><span>Savat</span></a>
+          <a href="{% url 'Shoping_Cart_Html' %}" class="nav-item cart-link">
+            <i class="fa-solid fa-bag-shopping"></i>
+            {% if cart_item_count > 0 %}
+              <span class="cart-badge">{{ cart_item_count }}</span>
+            {% endif %}
+            <span>Savat</span>
+          </a>
           <a href="#" class="nav-item"><i class="fa-regular fa-heart"></i><span>Istaklar</span></a>
           <a href="{% url 'profile' %}" class="nav-item"><i class="fa-regular fa-user"></i><span>Profil</span></a>
         </nav>
@@ -457,6 +554,17 @@
           dot.classList.toggle("active", index === currentIndex),
         );
       }, 4000);
+
+      document.querySelectorAll('.fade-alert').forEach((alertEl) => {
+        setTimeout(() => {
+          alertEl.style.animation = 'slideOut 0.4s ease-in-out forwards';
+          setTimeout(() => {
+            if (alertEl.parentNode) {
+              alertEl.parentNode.removeChild(alertEl);
+            }
+          }, 400);
+        }, 4000);
+      });
     </script>
   </body>
 </html>
