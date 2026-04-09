@@ -1,3 +1,4 @@
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="uz">
 <head>
@@ -10,12 +11,13 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
     body { background: #e5e5e5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
 
+    /* Telefon Frame */
     .phone { width: 360px; height: 720px; background: #000; border-radius: 40px; padding: 12px; position: relative; border: 4px solid #333; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
     
     .screen { 
       width: 100%; height: 100%; background: #f4f5f7; border-radius: 28px; overflow-y: auto; 
       position: relative; display: flex; flex-direction: column; 
-      -ms-overflow-style: none; scrollbar-width: none; 
+      scrollbar-width: none; 
     }
     .screen::-webkit-scrollbar { display: none; }
 
@@ -23,19 +25,11 @@
 
     .top-header { background: #fff; padding: 35px 15px 15px; display: flex; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #eee; }
     
-    /* Ortga tugmasi uchun stil */
-    .back-btn {
-      color: #1f2026;
-      font-size: 18px;
-      text-decoration: none;
-      position: absolute;
-      left: 15px;
-      display: flex;
-      align-items: center;
-    }
+    .back-btn { color: #1f2026; font-size: 18px; text-decoration: none; position: absolute; left: 15px; display: flex; align-items: center; }
 
     .top-header h1 { font-size: 17px; font-weight: 600; width: 100%; text-align: center; }
 
+    /* Order Card */
     .order-card { 
       background: #fff; 
       margin: 10px 10px 15px 10px; 
@@ -49,14 +43,45 @@
     .order-id-row b { font-size: 17px; color: #1f2026; }
     .copy-icon { color: #7000ff; font-size: 14px; cursor: pointer; }
     .order-date { font-size: 13px; color: #8b8e99; margin-bottom: 12px; }
-    .delivery-title { font-size: 15px; font-weight: 600; color: #1f2026; margin-bottom: 12px; }
-    .product-box { display: flex; gap: 12px; align-items: center; margin-bottom: 15px; }
-    .product-img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; background: #f5f5f5; }
+
+    /* Yangilangan Rasmlar Qatori */
+    .product-box { display: flex; gap: 8px; align-items: center; margin-bottom: 15px; flex-wrap: wrap; }
+    
+    .product-img { 
+        width: 60px; 
+        height: 60px; 
+        border-radius: 8px; 
+        background: #f5f5f5; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        overflow: hidden; 
+        flex-shrink: 0;
+        border: 1px solid #eee;
+    }
+    .product-img img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* + yana nechta indikatori */
+    .more-indicator {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        background: #f0f0ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #7000ff;
+        font-weight: 700;
+        font-size: 14px;
+        border: 1px dashed #7000ff;
+    }
+
     .data-section { border-top: 1px solid #f0f0f2; padding-top: 12px; margin-top: 5px; }
     .data-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f2; }
     .data-item:last-child { border-bottom: none; }
     .data-label { font-size: 13px; font-weight: 600; color: #1f2026; margin-bottom: 4px; }
     .data-value { font-size: 13px; color: #4d4e59; line-height: 1.4; }
+
     .summary-box { border-top: 1px solid #f0f0f2; padding-top: 12px; margin-top: 5px; }
     .jami-row { display: flex; justify-content: space-between; align-items: center; }
     .jami-row b { font-size: 16px; }
@@ -82,36 +107,52 @@
         {% for i in request.user.orders.all %}
         <div class="order-card">
             
-          <div class="status-badge">Status shu yerda</div>
+          <div class="status-badge">{{ i.is_status }}</div>
           
           <div class="order-id-row">
             <b>Buyurtma №{{ i.id }}</b>
             <i class="fa-regular fa-copy copy-icon"></i>
           </div>
 
-          <div class="order-date">Sana shu yerda</div>
-          <div class="delivery-title">Yetkazish ma'lumoti</div>
+          <div class="order-date">{{ i.created_at|date:"d F H:i" }} zakaz berilgan!</div>
 
           <div class="product-box">
-            <div class="product-img" style="display:flex;align-items:center;justify-content:center;background:#eee;"><i class="fa-solid fa-box"></i></div>
-            <div style="font-size: 14px;">Ma'lumot o'zingizdan...</div>
+            {% for item in i.items.all|slice:":3" %}
+            <div class="product-img">
+                {% if item.product.images.first %}
+                    <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.name }}">
+                {% else %}
+                    <i class="fa-solid fa-box" style="font-size: 20px; color: #ccc;"></i>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            {% if i.items.count > 3 %}
+            <div class="more-indicator">
+                +{{ i.items.count|add:"-3" }}
+            </div>
+            {% endif %}
+            
+            <div style="font-size: 14px; color: #1f2026; margin-left: 4px;">
+                {{ i.items.count }} Mahsulot · <b>{{ i.total_order_price|intcomma }} so'm</b>
+            </div>
           </div>
 
           <div class="data-section">
             <div class="data-item">
-              <div class="data-label">Topshirish punkti</div>
-              <div class="data-value">Manzil o'zingizdan...</div>
+              <div class="data-label">Yetkazib berish manzili</div>
+              <div class="data-value">{{ i.address }}</div>
             </div>
             <div class="data-item">
               <div class="data-label">Buyurtmani qabul qiluvchi</div>
-              <div class="data-value">Ism va tel o'zingizdan...</div>
+              <div class="data-value">{{ request.user.username }} <br> {{ i.phone }}</div>
             </div>
           </div>
 
           <div class="summary-box">
             <div class="jami-row">
               <b>Jami</b>
-              <b>Narx o'zingizdan...</b>
+              <b>{{ i.total_order_price|intcomma }} so'm</b>
             </div>
 
             <div class="details-btn" onclick="toggleDetails('det{{ i.id }}', this)">
@@ -119,40 +160,35 @@
             </div>
 
             <div class="details-content" id="det{{ i.id }}">
-            
                 <div style="font-size: 12px; color: #8b8e99; margin-bottom: 8px; margin-top: 10px;">
                     MAHSULOTLAR RO'YXATI
                 </div>
 
                 <div style="background: #f9f9fb; border-radius: 8px; padding: 10px; margin-bottom: 10px;">
-                    <div class="price-item" style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                        <span style="color: #1f2026; font-size: 13px;">Mahsulot nomi shu yerda</span>
-                        <span style="font-weight: 600; font-size: 13px;">120 000 so'm</span>
+                    {% for item in i.items.all %}
+                    <div class="price-item">
+                        <span style="color: #1f2026; font-size: 13px;">{{ item.product.name }} ({{ item.count }} dona)</span>
+                        <span style="font-weight: 600; font-size: 13px;">{{ item.item_total_price|intcomma }} so'm</span>
                     </div>
-                    
-                    <div class="price-item" style="display: flex; justify-content: space-between;">
-                        <span style="color: #1f2026; font-size: 13px;">Ikkinchi mahsulot (1 dona)</span>
-                        <span style="font-weight: 600; font-size: 13px;">29 000 so'm</span>
-                    </div>
+                    {% endfor %}
                 </div>
 
                 <div style="padding: 0 5px;">
-                    <div class="price-item" style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                    <div class="price-item">
                         <span style="color: #8b8e99; font-size: 13px;">Yetkazib berish:</span>
                         <span style="color: #008a00; font-weight: 600; font-size: 13px;">Bepul</span>
                     </div>
                     
-                    <div class="price-item" style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                    <div class="price-item">
                         <span style="color: #8b8e99; font-size: 13px;">To'lov usuli:</span>
-                        <span style="color: #1f2026; font-size: 13px;">Naqd / Karta</span>
+                        <span style="color: #1f2026; font-size: 13px;">{{ i.payment_method|capfirst }}</span>
                     </div>
 
-                    <div class="price-item" style="display: flex; justify-content: space-between; margin-top: 8px; border-top: 1px solid #eee; padding-top: 8px;">
+                    <div class="price-item" style="margin-top: 8px; border-top: 1px solid #eee; padding-top: 8px;">
                         <span style="color: #1f2026; font-weight: 700; font-size: 14px;">Jami summa:</span>
-                        <span style="color: #1f2026; font-weight: 700; font-size: 14px;">149 000 so'm</span>
+                        <span style="color: #1f2026; font-weight: 700; font-size: 14px;">{{ i.total_order_price|intcomma }} so'm</span>
                     </div>
                 </div>
-
             </div>
           </div>
 
@@ -175,7 +211,7 @@
         span.innerText = "Batafsil";
         icon.style.transform = "rotate(0deg)";
       } else {
-        content.style.display = "block";
+        content.style.display = "block" ;
         span.innerText = "Yopish";
         icon.style.transform = "rotate(180deg)";
       }

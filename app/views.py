@@ -1,3 +1,5 @@
+from unicodedata import name
+
 from django.shortcuts import render, redirect, get_list_or_404
 from django.contrib import messages
 from .models import UzumProduct, ShopingModel, Users, Order, OrderItem
@@ -5,10 +7,15 @@ from django.core.paginator import Paginator
 from django.views.generic import (
     ListView, TemplateView, DetailView
 )
+
+from django.shortcuts import render
+import requests
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
+TOKEN = "8664343682:AAF1kA0nwrIeLZjwUsbV97Za_J1Ry90sGBc"
+ADMIN_ID = [6411347321, 8327989068]
 
 #home html uchun
 def home_page(request):
@@ -34,7 +41,7 @@ class ProductDetailsViuw(DetailView):
     slug_field = "slug"
     
 
-#choping ni htmlini korsatish uchun
+#shoping ni htmlini korsatish uchun
 class ShopingCartHtml(LoginRequiredMixin, ListView): 
     model = ShopingModel
     template_name = 'products/shoping.html'
@@ -98,6 +105,8 @@ def rasmiylashtirish_prod(request):
         cart_delete = ShopingModel.objects.filter(id=i.id)
         cart_delete.delete()
         
+    # Buyurtma rasmiylashtirildi xabari (qizil rangga mos error/class bilan ko‘rsatiladi)
+    messages.error(request, "Buyurtmangiz muvaffaqiyatli berildi! Tez orada yetkazib beramiz.")
     return render(request, 'products/rasmiyla_sh.html', context={ "order": new_order })
 
 
@@ -170,16 +179,63 @@ def user_logout(request):
 
 #login html uchun
 def login_viuw(request):
+    
+    if request.user.is_authenticated:
+        return redirect('home_page')
+    
+    
     if request.method == 'POST':
         u_name = request.POST.get('username')
         pass_word = request.POST.get('password')
+        
         
         user = authenticate(request, username=u_name, password=pass_word)
         
         if user is not None:
             login(request, user)
-            return redirect('home_page')
-        else:
-            return render(request, 'login.html', {'eror': "Username yoki parolingiz noto'g'ri"})
+            messages.success(request, "muvaffaqiyatli tizimga kirdingiz!")
+            
+            if user.user_type == Users.UserTypes.Admin:
+                return redirect('admin_home')
+            else:
+                return redirect("home_page")
 
     return render(request, 'userlar/login.html')
+
+
+#yetkazib berish manzili html
+def yetkazib_berish_manzili(request):
+    return render(request, 'userlar/yetgazish_manzil.html')
+
+
+
+
+
+
+
+
+#------------------bot qismim------------------
+# qo‘llab-quvvatlash (support)
+def qollab_quvatlash(request):
+    if request.method == 'POST':
+        submit = request.POST.get('message')
+
+        bot_text = f"""
+📩 Hurmatli ADMIN YANGI MUROJAAT:
+
+👤 Foydalanuvchi: {request.user.username}
+🆔 ID: {request.user.id}
+
+💬 Xabar:
+{submit}
+        """
+
+        url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+        data = {
+            "chat_id": ADMIN_ID,
+            "text": bot_text
+        }
+
+        requests.post(url, data=data)
+
+    return render(request, 'userlar/support_page.html')

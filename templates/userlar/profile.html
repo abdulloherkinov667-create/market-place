@@ -103,7 +103,7 @@
             <div class="edit-icon"><i class="fa-solid fa-camera"></i></div>
         </div>
         <h2 style="font-size: 20px; margin: 0;">{{ request.user.username|default:"Mehmon" }}</h2>
-        <p style="color: #8b8e99; font-size: 14px; margin: 5px 0 0;">{{ request.user.email|default:"user@example.com" }}</p>
+        <p style="color: #8b8e99; font-size: 14px; margin: 5px 0 0;">{{ request.user.email|default:"user@example.com" |capfirst }}</p>
     </div>
 
     <div class="settings-list">
@@ -119,7 +119,7 @@
             <i class="fa-solid fa-chevron-right chevron"></i>
         </a>
 
-        <a href="#" class="settings-item">
+        <a href="{% url 'yetkazib_berish_manzili' %}" class="settings-item">
             <i class="fa-solid fa-location-dot"></i>
             <span>Yetkazib berish manzillari</span>
             <i class="fa-solid fa-chevron-right chevron"></i>

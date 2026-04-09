@@ -181,6 +181,16 @@
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
       }
 
+      .fade-alert.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .fade-alert.error .alert-progress {
+        background: #721c24;
+      }
+
       .fade-alert .alert-text {
         display: block;
       }
@@ -469,9 +479,10 @@
                   <i class="fa-solid fa-heart"></i> Saralanganlar
               </button>
 
-              <button class="side-item">
-                  <i class="fa-solid fa-headset"></i> Qo'llab-quvvatlash
-              </button>
+              <a href="{% url 'qollab_quvatlash' %}" class="side-item" style="text-decoration: none;">
+                  <i class="fa-solid fa-headset"></i> 
+                  <span>Qo'llab-quvvatlash</span>
+              </a>
 
               <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee" />
 
@@ -506,7 +517,7 @@
         {% if messages %}
           <div class="alert-wrapper">
             {% for message in messages %}
-              <div class="fade-alert">
+              <div class="fade-alert {{ message.tags }}">
                 <span class="alert-text">{{ message }}</span>
                 <span class="alert-progress"></span>
               </div>

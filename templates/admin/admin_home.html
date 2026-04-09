@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Home UZS - Animated</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #e5e5e5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* PHONE FRAME */
+    .phone {
+      width: 360px;
+      height: 720px;
+      background: #000;
+      border-radius: 40px;
+      padding: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      position: relative;
+      border: 4px solid #333;
+    }
+
+    /* SCREEN */
+    .screen {
+      width: 100%;
+      height: 100%;
+      background: #f8f9fa;
+      border-radius: 28px;
+      overflow-y: auto; 
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      scrollbar-width: none;
+    }
+
+    .screen::-webkit-scrollbar { display: none; }
+
+    .notch {
+      width: 60px; height: 20px; background: #000;
+      position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%);
+      border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;
+      z-index: 110;
+    }
+
+    .admin-container { padding: 45px 20px 20px; }
+    .admin-header { margin-bottom: 25px; }
+    .admin-header h1 { font-size: 24px; color: #1a1a1a; font-weight: 700; }
+    .admin-header p { font-size: 14px; color: #6c757d; }
+
+    /* STATISTIKA BLOCK ANIMATSIYA */
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 20px 0 12px;
+      color: #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .stats-grid a { text-decoration: none; color: inherit; }
+
+    .stat-box {
+      background: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid #eee;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+      /* Kirib kelish animatsiyasi */
+      animation: slideUp 0.5s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .stat-box .label {
+      font-size: 10px;
+      color: #888;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .stat-box .value { font-size: 16px; font-weight: 700; color: #1a1a1a; }
+    .stat-box .currency { font-size: 10px; color: #6366f1; margin-left: 2px; }
+
+    /* SKLAD RO'YXATI */
+    .stock-list { display: flex; flex-direction: column; gap: 10px; }
+    .stock-item {
+      background: #fff;
+      border: 1px solid #eee;
+      padding: 12px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .stock-info h4 { font-size: 13px; color: #333; }
+    .stock-info p { font-size: 11px; color: #999; }
+    .stock-count {
+      background: #fee2e2;
+      color: #ef4444;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+
+    /* TUGMALAR */
+    .button-group { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+    .button-group a { text-decoration: none; }
+
+    .admin-btn {
+      width: 100%;
+      padding: 15px;
+      background: #6366f1;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .admin-btn:active { transform: scale(0.98); }
+    .admin-btn.secondary { background: #fff; color: #6366f1; border: 1px solid #6366f1; }
+    .admin-btn.danger { background: #fff; color: #ef4444; border: 1px solid #ef4444; }
+  </style>
+</head>
+<body>
+
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="admin-container">
+        
+        <div class="admin-header">
+          <h1>Admin Paneli</h1>
+          <p>Xush kelibsiz, tizim nazorati</p>
+        </div>
+
+        <div class="section-title">
+          Statistika <i class="fa-solid fa-chart-line" style="font-size: 14px; color: #6366f1;"></i>
+        </div>
+        
+        <div class="stats-grid">
+          <a href="#">
+            <div class="stat-box" style="animation-delay: 0.1s;">
+              <span class="label">Umumiy Savdo</span>
+              <span class="value"><span class="counter" data-target="24500000">0</span><span class="currency">UZS</span></span>
+            </div>
+          </a>
+          <a href="#">
+            <div class="stat-box" style="animation-delay: 0.2s;">
+              <span class="label">Sof Foyda</span>
+              <span class="value"><span class="counter" data-target="8200000">0</span><span class="currency">UZS</span></span>
+            </div>
+          </a>
+          <a href="{% url 'buyurtma_admin' %}">
+            <div class="stat-box" style="animation-delay: 0.3s;">
+              <span class="label">Buyurtmalar</span>
+              <span class="value"><span class="counter" data-target="412">0</span> <small>ta</small></span>
+            </div>
+          </a>
+          <a href="#">
+            <div class="stat-box" style="animation-delay: 0.4s;">
+              <span class="label">Mijozlar</span>
+              <span class="value"><span class="counter" data-target="1840">0</span> <small>ta</small></span>
+            </div>
+          </a>
+        </div>
+
+        <div class="section-title">Tugayotgan tovarlar</div>
+        <div class="stock-list">
+          <div class="stock-item">
+            <div class="stock-info">
+              <h4>iPhone 15 Pro Max</h4>
+              <p>Kategoriya: Smartfonlar</p>
+            </div>
+            <div class="stock-count">2 ta qoldi</div>
+          </div>
+          <div class="stock-item">
+            <div class="stock-info">
+              <h4>AirPods Pro 2</h4>
+              <p>Kategoriya: Aksessuarlar</p>
+            </div>
+            <div class="stock-count">5 ta qoldi</div>
+          </div>
+        </div>
+
+        <div class="section-title">Tezkor amallar</div>
+        <div class="button-group">
+          <a href="{% url 'buyurtma_admin' %}"><button class="admin-btn"><i class="fa-solid fa-list-check"></i> Buyurtmalar</button></a>
+          <a href="{% url 'logout_html' %}"><button class="admin-btn danger"><i class="fa-solid fa-power-off"></i> Chiqish</button></a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Raqamlarni sanash animatsiyasi (Counter Animation)
+    const counters = document.querySelectorAll('.counter');
+    const speed = 50; // Tezlik (qancha kichik bo'lsa shuncha tez)
+
+    counters.forEach(counter => {
+      const animate = () => {
+        const target = +counter.getAttribute('data-target');
+        const count = +counter.innerText.replace(/,/g, '');
+        const increment = target / speed;
+
+        if (count < target) {
+          const nextValue = Math.ceil(count + increment);
+          // Raqamlarni formatlash (masalan: 24,500,000)
+          counter.innerText = nextValue.toLocaleString();
+          setTimeout(animate, 20);
+        } else {
+          counter.innerText = target.toLocaleString();
+        }
+      };
+      animate();
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yetkazib berish manzillari</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #e5e5e5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* PHONE FRAME */
+    .phone {
+      width: 360px;
+      height: 720px;
+      background: #000;
+      border-radius: 40px;
+      padding: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      position: relative;
+      border: 4px solid #333;
+    }
+
+    /* SCREEN */
+    .screen {
+      width: 100%;
+      height: 100%;
+      background: #f8f9fa;
+      border-radius: 28px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .notch {
+      width: 60px; height: 18px; background: #000;
+      position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%);
+      border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
+      z-index: 10;
+    }
+
+    /* HEADER */
+    .header {
+      padding: 35px 20px 15px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .back-btn {
+      font-size: 18px;
+      color: #1a1a1a;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    /* CONTENT */
+    .content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+
+    .content::-webkit-scrollbar { display: none; }
+
+    /* ADDRESS CARD */
+    .address-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 15px;
+      border: 1px solid #f0f0f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      transition: 0.2s;
+    }
+
+    .address-card:active {
+      transform: scale(0.98);
+      background: #fafafa;
+    }
+
+    .address-info {
+      display: flex;
+      gap: 12px;
+    }
+
+    .address-icon {
+      width: 40px;
+      height: 40px;
+      background: #f0ebff;
+      color: #7f4df2;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+    }
+
+    .address-details h3 {
+      font-size: 15px;
+      margin-bottom: 4px;
+      color: #1f2026;
+    }
+
+    .address-details p {
+      font-size: 13px;
+      color: #8b8e99;
+      line-height: 1.4;
+    }
+
+    .status-badge {
+      font-size: 11px;
+      background: #7f4df2;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-top: 5px;
+      display: inline-block;
+    }
+
+    /* ACTION BUTTONS */
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .action-btn {
+      color: #ccc;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .action-btn:hover { color: #7f4df2; }
+
+    /* ADD NEW BUTTON */
+    .add-btn {
+      position: absolute;
+      bottom: 30px;
+      left: 20px;
+      right: 20px;
+      background: #7f4df2;
+      color: #fff;
+      border: none;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(127, 77, 242, 0.3);
+      text-decoration: none;
+    }
+
+    .add-btn:active {
+      transform: scale(0.97);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone">
+    <div class="notch"></div>
+    
+    <div class="screen">
+      <header class="header">
+        <a href="{% url 'profile' %}" class="back-btn">
+          <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <h1>Yetkazib berish manzillari</h1>
+      </header>
+
+      <div class="content">
+        
+        <div class="address-card">
+          <div class="address-info">
+            <div class="address-icon"><i class="fa-solid fa-house"></i></div>
+            <div class="address-details">
+              <h3>Uy manzili</h3>
+              <p>Toshkent sh., Chilonzor tumani, 19-kvartal, 5-uy, 12-xonadon</p>
+              <span class="status-badge">Asosiy</span>
+            </div>
+          </div>
+          <div class="actions">
+            <i class="fa-solid fa-pen action-btn"></i>
+          </div>
+        </div>
+
+        <div class="address-card">
+          <div class="address-info">
+            <div class="address-icon" style="background: #e1f5fe; color: #03a9f4;"><i class="fa-solid fa-briefcase"></i></div>
+            <div class="address-details">
+              <h3>Ishxonam</h3>
+              <p>Toshkent sh., Yunusobod tumani, Amir Temur ko'chasi, 108-uy</p>
+            </div>
+          </div>
+          <div class="actions">
+            <i class="fa-solid fa-pen action-btn"></i>
+          </div>
+        </div>
+
+        <div class="address-card">
+          <div class="address-info">
+            <div class="address-icon" style="background: #fff3e0; color: #ff9800;"><i class="fa-solid fa-location-dot"></i></div>
+            <div class="address-details">
+              <h3>Ota-onam uyi</h3>
+              <p>Samarqand vil., Registon ko'chasi, 45-uy</p>
+            </div>
+          </div>
+          <div class="actions">
+            <i class="fa-solid fa-pen action-btn"></i>
+          </div>
+        </div>
+
+      </div>
+
+      <a href="#" class="add-btn">
+        <i class="fa-solid fa-plus"></i>
+        Yangi manzil qo'shish
+      </a>
+
+    </div>
+  </div>
+
+</body>
+</html>

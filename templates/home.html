@@ -7,10 +7,13 @@
     <div class="slider-wrapper" id="sliderWrapper">
       <div class="slide">
         <div class="slide-img" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500');">
-          <div class="slide-content"><h2>TERRA PRO</h2></div>
+          <div class="slide-content">
+            <h2>TERRA PRO</h2>
+          </div>
         </div>
       </div>
-      </div>
+    </div>
+    
     <div class="dots">
       <div class="dot active"></div>
       <div class="dot"></div>
@@ -23,7 +26,6 @@
   <div class="product-grid">
     {% for i in page_obj %}
     <div class="product-card">
-      
       <i class="fa-regular fa-heart wish-icon"></i>
 
       <a href="{% url 'product_details' i.slug %}" style="text-decoration: none; color: inherit; display: block;">
@@ -31,7 +33,7 @@
           <img class="product-img" src="{{ i.images.all.0.image.url }}" alt="{{ i.name }}" />
         {% endif %}
         <div class="product-info">
-          <p class="product-title">{{ i.name }}</p>
+          <p class="product-title">{{ i.name |capfirst }}</p>
           <div class="price-container">
             <span class="price-now">{{ i.price|intcomma }} so'm</span>
           </div>
@@ -41,7 +43,6 @@
       <div style="padding: 0 8px 8px 8px;">
         <form action="{% url 'shoping_cart_create' %}" method="POST">
           {% csrf_token %}
-          
           <input type="hidden" name="uzumproduct" value="{{ i.id }}">
           <input type="hidden" name="user" value="{{ request.user.id }}">
 
@@ -51,31 +52,96 @@
           </button>
         </form>
       </div>
-
     </div>
     {% endfor %}
   </div>
 </div>
 
 <style>
-  /* Karta havolasi stili */
-  .product-card a {
-    color: inherit;
-    text-decoration: none;
-    display: block;
+  /* --- SLIDER STILI --- */
+  .slider-container {
+    position: relative;
+    margin: 12px;
+    border-radius: 16px; /* Burchaklarni yumshatish */
+    overflow: hidden;
+    background: #f0f0f0;
   }
 
-  /* Savatga tugmasi uchun maxsus stil (Uzum uslubida) */
+  .slide-img {
+    height: 240px; /* Balandlikni biroz oshirdik */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end; /* Matnni pastki qismga tushirish */
+    padding: 24px;
+    position: relative;
+  }
+
+  /* Rasm ustiga qora gradient (Overlay) - Matn tiniq ko'rinishi uchun */
+  .slide-img::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 60%);
+    z-index: 1;
+  }
+
+  .slide-content {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 25px; /* Nuqtalardan yuqorida turishi uchun joy */
+  }
+
+  .slide-content h2 {
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+
+  /* --- DOTS (NAVIGATSIYA) --- */
+  .dots {
+    position: absolute;
+    bottom: 15px;
+    left: 24px;
+    display: flex;
+    gap: 8px;
+    z-index: 3;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+
+  .dot.active {
+    width: 20px; /* Aktiv nuqtani cho'ziqroq qilish */
+    background: #ffffff;
+    border-radius: 10px;
+  }
+
+  /* --- MAHSULOT KARTALARI --- */
+  .product-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
   .add-cart-btn {
     width: 100%;
-    height: 40px;
+    height: 44px;
     background: transparent;
-    border: 1px solid #7f4df2;
-    border-radius: 10px;
+    border: 1.5px solid #7f4df2;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
     color: #7f4df2;
     font-size: 14px;
     font-weight: 600;
@@ -83,59 +149,25 @@
     transition: all 0.2s ease;
   }
 
-  /* Tugma bosilgandagi effekt */
   .add-cart-btn:active {
     background: #7f4df2;
     color: #fff;
-    transform: scale(0.96);
+    transform: scale(0.97);
   }
 
-  .add-cart-btn i {
-    font-size: 16px;
-  }
-
-  .main-content {
-    position: relative;
-  }
-
-  .alert-wrapper {
-    position: absolute;
-    right: 14px;
-    top: 12px;
-    width: calc(100% - 28px);
-    max-width: 340px;
-    z-index: 999;
-  }
-
+  /* --- ALERT & ANIMATION --- */
+  .main-content { position: relative; }
   .fade-alert {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-    border-radius: 10px;
-    padding: 12px 14px;
-    margin-bottom: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    opacity: 0;
-    transform: translateY(-10px);
-    animation: slideIn 0.4s ease-in-out forwards;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+    background: #d4edda; color: #155724; border: 1px solid #c3e6cb;
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 10px;
+    font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    animation: slideIn 0.4s ease-out forwards;
   }
 
-  @keyframes slideIn {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes slideOut {
-    to {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-  }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes slideOut { to { opacity: 0; transform: translateY(-10px); } }
 </style>
+
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -145,9 +177,7 @@
     setTimeout(function () {
       alertEl.style.animation = 'slideOut 0.4s ease-in-out forwards';
       setTimeout(function () {
-        if (alertEl.parentNode) {
-          alertEl.parentNode.removeChild(alertEl);
-        }
+        if (alertEl.parentNode) alertEl.parentNode.removeChild(alertEl);
       }, 400);
     }, 5000);
   });

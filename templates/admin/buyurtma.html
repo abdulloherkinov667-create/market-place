@@ -1,0 +1,239 @@
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Orders Pro - Animated</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <style>
+    /* ASOSIY KONTEYNER */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body { background: #eef2f3; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    
+    .phone {
+      width: 360px; height: 720px; background: #1a1a1a; border-radius: 40px;
+      padding: 10px; box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+      position: relative; border: 4px solid #333;
+    }
+
+    .screen {
+      width: 100%; height: 100%; background: #f8f9fa; border-radius: 32px;
+      overflow: hidden; position: relative; display: flex; flex-direction: column;
+    }
+
+    .notch {
+      width: 60px; height: 18px; background: #1a1a1a; position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%); border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; z-index: 110;
+    }
+
+    /* HEADER */
+    .header {
+      padding: 45px 15px 15px; background: #fff; border-bottom: 1px solid #eee;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .back-btn {
+      width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;
+      background: #f1f3f5; border-radius: 10px; cursor: pointer; color: #333;
+      text-decoration: none; /* Link chizig'ini olib tashlash */
+    }
+    .header-title { font-size: 17px; font-weight: 700; color: #1a1a1a; flex: 1; margin-left: 15px; }
+
+    /* KASSA DASHBOARD */
+    .kassa-preview {
+      margin: 15px; background: linear-gradient(135deg, #6366f1, #a855f7);
+      padding: 15px; border-radius: 20px; color: #fff;
+      box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+      animation: slideDown 0.6s ease-out;
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .kassa-preview div { font-size: 11px; opacity: 0.9; }
+    .kassa-preview h2 { font-size: 22px; margin-top: 5px; font-weight: 800; }
+
+    /* SEARCH */
+    .search-bar {
+      margin: 0 15px 15px; background: #fff; padding: 10px 15px;
+      border-radius: 12px; display: flex; align-items: center; gap: 10px;
+      border: 1px solid #eee;
+    }
+    .search-bar input { border: none; outline: none; font-size: 13px; width: 100%; }
+
+    /* ORDER LIST */
+    .content { flex: 1; overflow-y: auto; padding: 0 15px 100px; }
+    
+    .order-link { text-decoration: none; color: inherit; display: block; }
+
+    .order-card {
+      background: #fff; border-radius: 18px; padding: 15px; margin-bottom: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02); border: 1px solid #f0f0f0;
+      animation: fadeIn 0.8s ease;
+      transition: background 0.2s;
+    }
+    .order-card:active { background: #f1f3f5; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .order-id { font-weight: 700; color: #333; font-size: 14px; }
+    .status-pill { font-size: 10px; padding: 4px 10px; border-radius: 20px; font-weight: 700; background: #fef3c7; color: #d97706; }
+    .client-info { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; }
+    .price-tag { font-weight: 800; color: #6366f1; font-size: 15px; }
+
+    .more-options { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #bbb; border-radius: 50%; z-index: 5; }
+    .more-options:hover { background: #eee; }
+
+    /* BOTTOM SHEET */
+    .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: none; z-index: 100; backdrop-filter: blur(2px); }
+    .sheet { position: absolute; bottom: -100%; left: 0; width: 100%; background: #fff; border-top-left-radius: 25px; border-top-right-radius: 25px; padding: 20px; z-index: 101; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .sheet.active { bottom: 0; }
+    .handle { width: 40px; height: 4px; background: #e0e0e0; border-radius: 10px; margin: 0 auto 20px; }
+    .option { padding: 12px 15px; border-radius: 12px; margin-bottom: 5px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; font-weight: 600; color: #444; }
+
+    /* BOTTOM NAV */
+    .navbar { position: absolute; bottom: 0; width: 100%; height: 75px; background: #fff; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; padding-bottom: 10px; }
+    .nav-item { text-decoration: none; color: #a0a0a0; text-align: center; }
+    .nav-item.active { color: #6366f1; }
+    .nav-item i { font-size: 18px; margin-bottom: 4px; display: block; }
+    .nav-item span { font-size: 10px; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="overlay" id="overlay" onclick="toggleSheet()"></div>
+
+      <div class="sheet" id="sheet">
+        <div class="handle"></div>
+        <h3 style="font-size: 16px; margin-bottom: 15px; text-align: center;">Statusni o'zgartirish</h3>
+        <div class="option" style="color: #d97706;"><i class="fa-solid fa-hourglass-start"></i> Kutilmoqda</div>
+        <div class="option" style="color: #2563eb;"><i class="fa-solid fa-circle-check"></i> Tasdiqlandi</div>
+        <div class="option" style="color: #9333ea;"><i class="fa-solid fa-box"></i> Tayyorlanmoqda</div>
+        <div class="option" style="color: #059669;"><i class="fa-solid fa-truck"></i> Yo‘lga chiqdi</div>
+        <div class="option" style="color: #10b981;"><i class="fa-solid fa-box-open"></i> Yetkazildi</div>
+        <div class="option" style="color: #dc2626;"><i class="fa-solid fa-rectangle-xmark"></i> Bekor qilindi</div>
+      </div>
+
+      <header class="header">
+        <a href="{% url 'admin_home' %}" class="back-btn">
+          <i class="fa-solid fa-chevron-left"></i>
+        </a>
+        <div class="header-title">Buyurtmalar</div>
+        <i class="fa-solid fa-ellipsis-vertical" style="color: #888;"></i>
+      </header>
+
+      <div class="kassa-preview">
+        <div>Bugungi umumiy tushum</div>
+        <h2><span class="count-money" data-target="3450000">0</span> so'm</h2>
+        <div style="margin-top: 8px; display: flex; gap: 15px;">
+          <span><i class="fa-solid fa-arrow-up"></i> +<span class="count-percent" data-target="12">0</span>%</span>
+          <span><i class="fa-solid fa-wallet"></i> <span class="count-simple" data-target="24">0</span> ta savdo</span>
+        </div>
+      </div>
+
+      <div class="search-bar">
+        <i class="fa-solid fa-magnifying-glass" style="color: #ccc;"></i>
+        <input type="text" placeholder="ID yoki mijoz ismini qidiring...">
+      </div>
+
+      <div class="content">
+        {% if orders %}
+          {% for order in orders %}
+            <a href="{% url 'buyurma_details' order.id %}" class="order-link">
+              <div class="order-card">
+                <div class="card-header">
+                  <span class="order-id">ORD-{{ order.id }}</span>
+                  <span class="status-pill">Tastiqlandi</span>
+                </div>
+                <div class="client-info">
+                  <div class="avatar" style="background: #eef2ff; color: #6366f1;">sm</div>
+                  <div>
+                    <div style="font-size: 13px; font-weight: 700;">{{ order.user.username |capfirst }}</div>
+                    <div style="font-size: 11px; color: #999;">{{ order.address }}</div>
+                  </div>
+                  <div class="more-options" style="margin-left: auto;" onclick="event.preventDefault(); event.stopPropagation(); toggleSheet()">
+                     <i class="fa-solid fa-ellipsis"></i>
+                  </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                  <div class="price-tag">{{ order.total_order_price | intcomma}} so'm</div>
+                  <div style="font-size: 11px; color: #bbb;">{{ order.created_at|date:"H:i" }}</div>
+                </div>
+              </div>
+            </a>
+          {% endfor %}
+        {% else %}
+          <div style="text-align: center; padding: 40px 20px; color: #999;">
+            <i class="fa-solid fa-inbox" style="font-size: 48px; margin-bottom: 15px; display: block;"></i>
+            <p>Buyurtmalar mavjud emas</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <nav class="navbar">
+        <a href="{% url 'buyurtma_admin' %}" class="nav-item active"><i class="fa-solid fa-cart-flatbed-suitcase"></i><span>Buyurtma</span></a>
+        <a href="{% url 'mijozlar' %}" class="nav-item"><i class="fa-solid fa-users-gear"></i><span>Mijozlar</span></a>
+        <a href="{% url 'kassa' %}" class="nav-item"><i class="fa-solid fa-wallet"></i><span>Kassa</span></a>
+        <a href="{% url 'hisobothtml' %}" class="nav-item"><i class="fa-solid fa-chart-pie"></i><span>Hisobot</span></a>
+      </nav>
+
+    </div>
+  </div>
+
+  <script>
+    function animateCounters() {
+      const counters = [
+        { el: '.count-money', format: true },
+        { el: '.count-percent', format: false },
+        { el: '.count-simple', format: false }
+      ];
+
+      counters.forEach(item => {
+        const element = document.querySelector(item.el);
+        if(!element) return;
+        const target = +element.getAttribute('data-target');
+        const duration = 1500;
+        const startTime = performance.now();
+
+        function updateCount(currentTime) {
+          const elapsedTime = currentTime - startTime;
+          const progress = Math.min(elapsedTime / duration, 1);
+          const easeOutQuad = t => t * (2 - t);
+          const currentCount = Math.floor(easeOutQuad(progress) * target);
+
+          if (item.format) {
+            element.innerText = currentCount.toLocaleString();
+          } else {
+            element.innerText = currentCount;
+          }
+
+          if (progress < 1) {
+            requestAnimationFrame(updateCount);
+          } else {
+            element.innerText = item.format ? target.toLocaleString() : target;
+          }
+        }
+        requestAnimationFrame(updateCount);
+      });
+    }
+
+    window.onload = animateCounters;
+
+    function toggleSheet() {
+      const sheet = document.getElementById('sheet');
+      const overlay = document.getElementById('overlay');
+      sheet.classList.toggle('active');
+      overlay.style.display = (overlay.style.display === 'block') ? 'none' : 'block';
+    }
+  </script>
+
+</body>
+</html>

@@ -142,7 +142,7 @@ class Order(BaseCreatedModel):
 #order item model
 class OrderItem(BaseCreatedModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
-    product = models.ForeignKey(UzumProduct, on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey(UzumProduct, on_delete=models.SET_NULL, related_name="order_items", null=True)
     price = models.BigIntegerField(help_text="Sotib olingan vaqtdagi narxi", editable=False) 
     count = models.IntegerField(validators=[MinValueValidator(1)])
 
@@ -157,3 +157,4 @@ class OrderItem(BaseCreatedModel):
     def save(self, *args, **kwargs):
         self.price = self.product.price
         return super().save(*args, **kwargs)
+    

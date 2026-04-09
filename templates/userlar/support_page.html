@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yordam Markazi Final</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    
+    body {
+      background: #e5e5e5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* TELEFON SHABLONI */
+    .phone {
+      width: 360px;
+      height: 720px;
+      background: #000;
+      border-radius: 40px;
+      padding: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      position: relative;
+      border: 4px solid #333;
+    }
+
+    .screen {
+      width: 100%;
+      height: 100%;
+      background: #f8f9fa;
+      border-radius: 28px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .notch {
+      width: 60px; height: 18px; background: #000;
+      position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%);
+      border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;
+      z-index: 10;
+    }
+
+    /* HEADER */
+    .header {
+      padding: 45px 20px 15px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .back-link {
+      color: #333;
+      text-decoration: none;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .header h2 { font-size: 18px; color: #1a1a1a; font-weight: 600; }
+
+    /* CONTENT */
+    .content {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+    }
+
+    /* CONTACT CARDS */
+    .contact-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      text-decoration: none;
+      border: 1px solid #f0f0f0;
+      transition: 0.2s;
+    }
+
+    .contact-card:active { transform: scale(0.98); background: #fafafa; }
+
+    .icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 22px;
+    }
+
+    .tg-box { background: #e3f2fd; color: #2196f3; }
+    .ph-box { background: #f1f8e9; color: #689f38; }
+
+    .text-info h4 { font-size: 15px; color: #333; margin-bottom: 2px; }
+    .text-info p { font-size: 12px; color: #8e8e93; }
+
+    .section-title {
+      font-size: 12px;
+      color: #999;
+      margin: 20px 5px 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* MUAMMOLAR RO'YXATI */
+    .problem-item {
+      background: #fff;
+      padding: 15px;
+      border-radius: 15px;
+      border: 1px solid #eee;
+      margin-bottom: 10px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: 0.2s;
+    }
+
+    .problem-item:active { background: #f5f5ff; border-color: #6366f1; }
+
+    .prob-text h5 {
+      font-size: 14px;
+      color: #1a1a1a;
+      margin-bottom: 3px;
+    }
+
+    .prob-text p {
+      font-size: 12px;
+      color: #999;
+    }
+
+    /* TEXTAREA */
+    .detail-section {
+      display: none;
+      background: #fff;
+      padding: 15px;
+      border-radius: 18px;
+      border: 1px solid #eee;
+      margin-top: 10px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .detail-section label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #6366f1;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 12px;
+      resize: none;
+      font-size: 14px;
+      outline: none;
+      background: #fcfcfc;
+    }
+
+    .send-btn {
+      width: 100%;
+      padding: 14px;
+      background: #6366f1;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      margin-top: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone">
+    <div class="notch"></div>
+    
+    <div class="screen">
+      <div class="header">
+        <a href="{% url 'home_page' %}" class="back-link">
+          <i class="fa-solid fa-chevron-left"></i>
+        </a>
+        <h2>Yordam markazi</h2>
+      </div>
+
+      <div class="content">
+        
+        <a href="https://web.telegram.org/k/#@market_playesbot" class="contact-card">
+          <div class="icon-box tg-box">
+            <i class="fa-brands fa-telegram"></i>
+          </div>
+          <div class="text-info">
+            <h4>Telegram bot</h4>
+            <p>Onlayn operator bilan gaplashish</p>
+          </div>
+        </a>
+
+        <a href="tel:+998901234567" class="contact-card">
+          <div class="icon-box ph-box">
+            <i class="fa-solid fa-phone"></i>
+          </div>
+          <div class="text-info">
+            <h4>Ishonch telefoni</h4>
+            <p>+998 90 123 45 67</p>
+          </div>
+        </a>
+
+        <h3 class="section-title">Muammo turini tanlang</h3>
+
+        <div class="problem-list">
+          
+          <div class="problem-item" onclick="showDetail('To\'lov xatoligi')">
+            <div class="prob-text">
+              <h5>To'lov xatoligi</h5>
+              <p>Pul yechildi, lekin buyurtma to'lanmadi</p>
+            </div>
+            <i class="fa-solid fa-angle-right" style="color:#ccc"></i>
+          </div>
+
+          <div class="problem-item" onclick="showDetail('Yetkazib berish')">
+            <div class="prob-text">
+              <h5>Yetkazib berish</h5>
+              <p>Kurer kechikmoqda yoki manzilni topmadi</p>
+            </div>
+            <i class="fa-solid fa-angle-right" style="color:#ccc"></i>
+          </div>
+
+          <div class="problem-item" onclick="showDetail('Sifat muammosi')">
+            <div class="prob-text">
+              <h5>Mahsulot sifati</h5>
+              <p>Mahsulot shikastlangan yoki muddati o'tgan</p>
+            </div>
+            <i class="fa-solid fa-angle-right" style="color:#ccc"></i>
+          </div>
+
+          <div class="problem-item" onclick="showDetail('Profil va xavfsizlik')">
+            <div class="prob-text">
+              <h5>Profil va xavfsizlik</h5>
+              <p>Akkauntga kirish yoki parolni tiklash</p>
+            </div>
+            <i class="fa-solid fa-angle-right" style="color:#ccc"></i>
+          </div>
+
+          <div class="problem-item" onclick="showDetail('Boshqa muammo')">
+            <div class="prob-text">
+              <h5>Boshqa masalalar</h5>
+              <p>Ro'yxatda yo'q bo'lgan boshqa muammolar</p>
+            </div>
+            <i class="fa-solid fa-angle-right" style="color:#ccc"></i>
+          </div>
+
+        </div>
+
+        <div class="detail-section" id="detailBox">
+            <label id="selectedProblem">Murojaat tafsiloti</label>
+            
+            <form method="POST">
+              {% csrf_token %}
+              <textarea name="message" placeholder="Iltimos, batafsilroq yozib qoldiring..." required></textarea>
+              <button type="submit" class="send-btn">Yuborish</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showDetail(problemName) {
+      const box = document.getElementById('detailBox');
+      const label = document.getElementById('selectedProblem');
+      box.style.display = 'block';
+      label.innerText = problemName + " bo'yicha batafsil:";
+      box.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function sendForm() {
+      alert("Xabaringiz yuborildi. Operatorlarimiz ko'rib chiqishmoqda.");
+      location.reload();
+    }
+  </script>
+
+</body>
+</html>
