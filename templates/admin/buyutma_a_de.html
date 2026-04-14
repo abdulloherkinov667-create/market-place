@@ -90,6 +90,28 @@
     }
     #imageModal img { max-width: 90%; max-height: 80%; border-radius: 10px; border: 2px solid #fff; }
     .close-img { position: absolute; top: 40px; right: 20px; color: #fff; font-size: 30px; cursor: pointer; }
+
+    /* 1. Umumiy panel kengligi */
+::-webkit-scrollbar {
+  width: 8px; /* Vertikal panel kengligi */
+}
+
+/* 2. Yo'lakcha (Track) qismi - panel harakatlanadigan joy */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+  border-radius: 10px;
+}
+
+/* 3. Yuguruvchi (Thumb) qismi - siz ushlab tortadigan narsa */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 10px;
+}
+
+/* 4. Thumb ustige sichqoncha borgandagi holat */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
   </style>
 </head>
 <body>
@@ -120,20 +142,20 @@
           <center><strong>HISOBOТ / INVOICE</strong></center>
           <br>
           --------------------------------<br>
-          Buyurtma ID: ORD-777<br>
-          Sana: 20.03.2024 14:30<br>
+          Buyurtma ID: ORD-{{ order.id }}<br>
+          Sana: {{ order.created_at|date:"d.m.Y H:i" }}<br>
           --------------------------------<br>
-          Mijoz: Erkinov Abdulloh<br>
-          Tel: +998 90 123 45 67<br>
-          Manzil: Toshkent sh., Chilonzor 9-kvartal<br>
+          Mijoz: {{ order.user.username |capfirst }}<br>
+          Tel: {{ order.phone }}<br>
+          Manzil: {{ order.address |capfirst }}<br>
           --------------------------------<br>
-          1. iPhone 15 Pro Max <br>
-            1 x 18,200,000 so'm<br>
-          2. Magsafe Silikon Case <br>
-            2 x 250,000 so'm<br>
+          1. {{ order_details.0.product.name |capfirst }} <br>
+            1 x {{ order_details.0.price|intcomma }} so'm<br>
+          2. {{ order_details.1.product.name |capfirst }} <br>
+            2 x {{ order_details.1.price|intcomma }} so'm<br>
           --------------------------------<br>
-          <strong>JAMI: 18,700,000 so'm</strong><br>
-          To'lov: Payme (Onlayn)<br>
+          <strong>JAMI: {{ order.total_order_price|intcomma }} so'm</strong><br>
+          To'lov: {{ order.get_payment_method_display }}<br>
           --------------------------------<br>
           <br>
           <center>Xaridingiz uchun rahmat!</center>
@@ -180,7 +202,7 @@
             {% endif %}
             <div class="item-info">
               <div class="item-name">{{ i.product.name |capfirst }}</div>
-              <div class="item-meta">{{ i.price|intcomma }} so'm x {{ i.count }} ta</div>
+              <div class="item-meta">{{ i.price|intcomma }} so'm {{ i.count }} ta</div>
             </div>
           </div>
           {% endfor %}
@@ -210,6 +232,7 @@
   </div>
 
   <script>
+    
     // RASM UCHUN FUNKSIYALAR
     function showFullImage(src) {
       document.getElementById('fullImage').src = src;

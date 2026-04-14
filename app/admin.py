@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UzumProduct, UzumProductImage, Kategoriy, ShopingModel, Users, Order, OrderItem
+from .models import Like, UzumProduct, UzumProductImage, Kategoriy, ShopingModel, Users, Order, OrderItem
 
 
 
@@ -37,4 +37,10 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ['order', 'product', 'price', 'count']
+    
+
+@admin.register(Like)
+class LikeAdmin(admin.ModelAdmin):
+    list_display = ['user', 'product']
+    
         

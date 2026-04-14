@@ -1,8 +1,9 @@
 from unicodedata import name
-
+from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render, redirect, get_list_or_404
 from django.contrib import messages
-from .models import UzumProduct, ShopingModel, Users, Order, OrderItem
+from django.db.models import Q
+from .models import UzumProduct, ShopingModel, Users, Order, OrderItem, Like
 from django.core.paginator import Paginator
 from django.views.generic import (
     ListView, TemplateView, DetailView
@@ -19,13 +20,32 @@ ADMIN_ID = [6411347321, 8327989068]
 
 #home html uchun
 def home_page(request):
-    products_list = UzumProduct.objects.all().order_by('-id') 
-    paginator = Paginator(products_list, 20)
+    query = ''
+    products_list = UzumProduct.objects.all().order_by('-id')
 
+    # search uchun
+    if request.method == 'POST':
+        query = request.POST.get('q', '').strip()
+        if query:
+            products_list = products_list.filter(
+                Q(name__icontains=query) | Q(about__icontains=query)
+            )
+
+    # Sahifalashni sozlash
+    paginator = Paginator(products_list, 20)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
-    return render(request, 'home.html', {'page_obj': page_obj})
+
+    # Foydalanuvchining yoqtirgan mahsulotlari 
+    liked_product_ids = []
+    if request.user.is_authenticated:
+        liked_product_ids = list(Like.objects.filter(user=request.user).values_list('product_id', flat=True))
+
+    return render(request, 'home.html', {
+        'page_obj': page_obj,
+        'liked_product_ids': liked_product_ids,
+        'search_query': query,
+    })
 
 
 #profile html
@@ -208,7 +228,50 @@ def yetkazib_berish_manzili(request):
     return render(request, 'userlar/yetgazish_manzil.html')
 
 
+#katalog html 
+def catalog_html(request):
+    return render(request, 'products/katalog.html')
 
+
+#qiqruv viuw
+# def search(request):
+#     if request.method == 'POST':
+#         search_query = request.POST.get('search_query')
+#         products_list = UzumProduct.objects.filter(name__icontains=search_query).order_by('-id')
+#         paginator = Paginator(products_list, 20)
+
+
+#ISTAKLAR HTML
+@login_required(login_url='login_viuw')
+def istaklar(request):
+    products = UzumProduct.objects.filter(
+        likes__user=request.user
+    ).distinct()
+
+    return render(request, 'products/istak.html', {
+        'page_obj': products
+    })
+
+
+#istaklar like qilish uchun
+@login_required(login_url='login_viuw')
+def istak_like_bos(request):
+    if request.method == 'POST':    
+        product_id = request.POST.get('product_id')
+        product = get_object_or_404(UzumProduct, id=product_id)
+        like = Like.objects.filter(user=request.user, product=product)
+        
+        if like.exists():
+            like.delete()
+        else:
+            like = Like.objects.create(user=request.user, product=product)
+            like.save()
+        return redirect('home_page')
+    
+    
+#yangi karta qoshish uchun html
+def yangi_karta(request):
+    return render(request, 'userlar/yngi_cart_qos.html')
 
 
 

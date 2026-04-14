@@ -158,3 +158,19 @@ class OrderItem(BaseCreatedModel):
         self.price = self.product.price
         return super().save(*args, **kwargs)
     
+
+#like model
+class Like(BaseCreatedModel):
+    user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='likes')
+    product = models.ForeignKey(UzumProduct, on_delete=models.CASCADE, related_name='likes')
+
+    class Meta:
+        unique_together = ('user', 'product')
+
+    def __str__(self):
+        return f"{self.user.username} likes {self.product.name}"
+    
+    
+#carta saqlash modeli
+class User_carts(BaseCreatedModel):
+    

@@ -504,15 +504,18 @@
           {% endif %} 
           </div>
 
-        <div class="top-bar">
+        <form method="POST" action="{% url 'home_page' %}">
+          {% csrf_token %}
+          <div class="top-bar">
           <div class="filter-btn" id="filterBtn" onclick="toggleSidebar()">
             <i class="fa-solid fa-bars-staggered"></i>
           </div>
           <div class="search-box">
             <i class="fa-solid fa-magnifying-glass" style="color: #999"></i>
-            <input type="text" placeholder="Qidirish..." />
+            <input type="text" name="q" placeholder="Qidirish..." value="{{ search_query|default:'' }}" />
           </div>
         </div>
+        </form>
 
         {% if messages %}
           <div class="alert-wrapper">
@@ -530,7 +533,7 @@
 
         <nav class="bottom-nav">
           <a href="{% url 'home_page' %}" class="nav-item active"><i class="fa-solid fa-house"></i><span>Asosiy</span></a>
-          <a href="#" class="nav-item"><i class="fa-solid fa-magnifying-glass"></i><span>Katalog</span></a>
+          <a href="{% url 'catalog_html' %}" class="nav-item"><i class="fa-solid fa-magnifying-glass"></i><span>Katalog</span></a>
           <a href="{% url 'Shoping_Cart_Html' %}" class="nav-item cart-link">
             <i class="fa-solid fa-bag-shopping"></i>
             {% if cart_item_count > 0 %}
@@ -538,7 +541,7 @@
             {% endif %}
             <span>Savat</span>
           </a>
-          <a href="#" class="nav-item"><i class="fa-regular fa-heart"></i><span>Istaklar</span></a>
+          <a href="{% url 'istaklar' %}" class="nav-item"><i class="fa-regular fa-heart"></i><span>Istaklar</span></a>
           <a href="{% url 'profile' %}" class="nav-item"><i class="fa-regular fa-user"></i><span>Profil</span></a>
         </nav>
       </div>

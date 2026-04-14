@@ -3,39 +3,22 @@
 {% load humanize %}
 
 <div class="main-content">
-  <div class="slider-container">
-    <div class="slider-wrapper" id="sliderWrapper">
-      <div class="slide">
-        <div class="slide-img" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500');">
-          <div class="slide-content"><h2>TERRA PRO</h2></div>
-        </div>
-      </div>
-    </div>
-    <div class="dots">
-      <div class="dot active"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-    </div>
-  </div>
 
-  <h3 style="padding: 0 15px; margin-bottom: 12px; font-size: 18px">Siz uchun tavsiyalar</h3>
+  <h3 style="padding: 0 15px; margin-bottom: 12px; font-size: 18px">
+    Istaklarim ({{ page_obj|length }})
+  </h3>
 
   <div class="product-grid">
     {% for i in page_obj %}
     <div class="product-card" style="position: relative;">
       
+      <!-- ❤️ LIKE -->
       <form action="{% url 'istak_like_bos' %}" method="POST" style="position:absolute; top:10px; right:10px; z-index:2;">
         {% csrf_token %}
         <input type="hidden" name="product_id" value="{{ i.id }}">
         
         <button type="submit" style="background:none; border:none; padding:0;">
-          <i class="fa-heart wish-icon
-            {% if i.id in liked_product_ids %}
-              fa-solid active
-            {% else %}
-              fa-regular
-            {% endif %}
-          "></i>
+          <i class="fa-solid fa-heart wish-icon active"></i>
         </button>
       </form>
 
@@ -66,48 +49,46 @@
       </div>
 
     </div>
+    {% empty %}
+      <p style="padding:20px;">Hozircha istaklar bo‘sh</p>
     {% endfor %}
   </div>
+
 </div>
 
 <style>
-  .wish-icon {
-    font-size: 20px;
-    cursor: pointer;
-    transition: transform 0.2s ease, color 0.2s ease;
-    color: #555;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
+.wish-icon {
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+  color: #ff4d4d;
+}
 
-  .wish-icon.active {
-    color: #ff4d4d !important;
-    transform: scale(1.2);
-  }
+.wish-icon.active {
+  transform: scale(1.2);
+}
 
-  .add-cart-btn {
-    width: 100%;
-    height: 40px;
-    background: transparent;
-    border: 1px solid #7f4df2;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: #7f4df2;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
+.add-cart-btn {
+  width: 100%;
+  height: 40px;
+  background: transparent;
+  border: 1px solid #7f4df2;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #7f4df2;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
 
-  .add-cart-btn:active {
-    background: #7f4df2;
-    color: #fff;
-    transform: scale(0.96);
-  }
+.add-cart-btn:active {
+  background: #7f4df2;
+  color: #fff;
+  transform: scale(0.96);
+}
 </style>
 
 {% endblock main %}

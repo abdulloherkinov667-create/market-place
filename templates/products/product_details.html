@@ -288,7 +288,7 @@
                         {% endif %}
                     </div>
 
-                    <h1 class="title">{{ uzumproduct.name }}</h1>
+                    <h1 class="title">{{ uzumproduct.name |capfirst  }}</h1>
 
                     <div class="installment">
                         <span class="inst-label">Muddatli to'lov <b>12 oy</b></span>
@@ -304,12 +304,12 @@
                         <h3 class="specs-title">Mahsulot xususiyatlari</h3>
                         <div class="spec-item">
                             <span class="spec-key">Kategoriya</span>
-                            <span class="spec-val">{{ uzumproduct.category.name }}</span>
+                            <span class="spec-val">{{ uzumproduct.category.name |capfirst  }}</span>
                         </div>
                         {% if uzumproduct.brand %}
                             <div class="spec-item">
                                 <span class="spec-key">Brend</span>
-                                <span class="spec-val">{{ uzumproduct.brand }}</span>
+                                <span class="spec-val">{{ uzumproduct.brand |capfirst  }}</span>
                             </div>
                         {% endif %}
                         <div class="spec-item">
