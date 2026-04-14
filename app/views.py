@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render, redirect, get_list_or_404
 from django.contrib import messages
 from django.db.models import Q
-from .models import UzumProduct, ShopingModel, Users, Order, OrderItem, Like
+from .models import UzumProduct, ShopingModel, Users, Order, OrderItem, Like, User_carts
 from django.core.paginator import Paginator
 from django.views.generic import (
     ListView, TemplateView, DetailView
@@ -269,9 +269,27 @@ def istak_like_bos(request):
         return redirect('home_page')
     
     
-#yangi karta qoshish uchun html
+#yangi karta chiqishi uchun html
 def yangi_karta(request):
     return render(request, 'userlar/yngi_cart_qos.html')
+
+@login_required(login_url='login_viuw')
+def kart_yarat(request):
+    if request.method == 'POST':
+        karta_nomer = request.POST.get('karta_nomer')
+        karta_egasi = request.POST.get('karta_egasi')
+        muddat = request.POST.get('muddat')
+        cvv = request.POST.get('cvv')
+        
+        banks_cart_new = User_carts.objects.create(
+            karta_nomer=karta_nomer,
+            cart_egasi=request.user,
+            muddat=muddat,
+            cvv=cvv
+        )
+        banks_cart_new.save()
+        messages.success(request, "Yangi karta muvaffaqiyatli qo'shildi!")
+        return redirect('profile')
 
 
 

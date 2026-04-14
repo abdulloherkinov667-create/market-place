@@ -1,7 +1,6 @@
 from django.contrib import admin
-from .models import Like, UzumProduct, UzumProductImage, Kategoriy, ShopingModel, Users, Order, OrderItem
-
-
+# admin.py ichida shunday yozing:
+from .models import Like, User_carts, UzumProduct, UzumProductImage, Kategoriy, ShopingModel, Users, Order, OrderItem
 
 @admin.register(UzumProduct)
 class UzumProductAdmin(admin.ModelAdmin):
@@ -44,3 +43,6 @@ class LikeAdmin(admin.ModelAdmin):
     list_display = ['user', 'product']
     
         
+@admin.register(User_carts)
+class User_cartsAdmin(admin.ModelAdmin):
+    list_display = ['karta_nomer', 'muddat', 'cvv']

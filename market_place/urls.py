@@ -8,7 +8,7 @@ from app.views import (
     ProductDetailsViuw, logout_html, user_logout, ShopingCartHtml,
     shoping_cart_create, tolov_usullari, delete_product_cart, rasmiylashtirish_prod,
     rasmiylashtirish_prod, upgdate_rasmiylash, order_html, order_details, qollab_quvatlash,
-    yetkazib_berish_manzili, istaklar, istak_like_bos, catalog_html, yangi_karta
+    yetkazib_berish_manzili, istaklar, istak_like_bos, catalog_html, yangi_karta, kart_yarat
 )
 
 from app.admin_viuw import (
@@ -57,6 +57,7 @@ urlpatterns = [
     #tolov usullari
     path('tolov_usullari/', tolov_usullari, name='tolov_usullari'),
     path('yangi_karta/', yangi_karta, name='yangi_karta'),
+    path('kart_yarat/', kart_yarat, name='kart_yarat'),
     
     #registratsiya
     path('registratsiya/', registratsiya, name='registratsiya'),

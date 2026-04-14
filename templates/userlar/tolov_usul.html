@@ -1,162 +1,150 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body { background: #e5e5e5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
 
-{% block main %}
-<style>
-    .main-content {
-        flex: 1;
-        background: #f8f9fa;
-        min-height: 100vh;
-        padding-bottom: 50px;
+    /* TELEFON SHABLONI */
+    .phone {
+      width: 360px; height: 720px; background: #000; border-radius: 40px;
+      padding: 12px; position: relative; border: 4px solid #333;
+    }
+    .notch {
+      width: 60px; height: 20px; background: #000; position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 10;
+    }
+    .screen {
+      width: 100%; height: 100%; background: #f8f9fa; border-radius: 28px;
+      overflow: hidden; display: flex; flex-direction: column;
     }
 
+    /* HEADER */
     .page-header {
-        background: #fff;
-        padding: 20px;
-        display: flex;
-        align-items: center;
-        border-bottom: 1px solid #f0f0f0;
+      background: #fff; padding: 35px 20px 15px;
+      display: flex; align-items: center; border-bottom: 1px solid #f0f0f0;
     }
+    .back-btn { font-size: 18px; color: #1f2026; margin-right: 15px; cursor: pointer; }
 
-    .back-btn {
-        color: #1f2026;
-        font-size: 18px;
-        margin-right: 15px;
-        text-decoration: none;
-    }
+    /* KARTA LISTI */
+    .card-list { padding: 15px; }
 
-    .card-list {
-        padding: 15px;
-    }
-
-    /* Bank kartasi dizayni */
+    /* IXCHAM VA CHO'ZILGAN KARTA */
     .bank-card {
-        background: linear-gradient(135deg, #7f4df2 0%, #5a29cc 100%);
-        border-radius: 16px;
-        padding: 20px;
-        color: #fff;
-        position: relative;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 15px rgba(127, 77, 242, 0.3);
-        overflow: hidden;
+      width: 100%;
+      height: 165px; /* Ozg'in dizayn */
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      border-radius: 15px;
+      padding: 18px 22px;
+      color: #fff;
+      position: relative;
+      margin-bottom: 15px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+      overflow: hidden;
     }
 
-    .bank-card::after {
-        content: "";
-        position: absolute;
-        top: -20px;
-        right: -20px;
-        width: 100px;
-        height: 100px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
+    .card-chip {
+      width: 36px; height: 26px;
+      background: linear-gradient(135deg, #f0d078 0%, #cf9e3d 100%);
+      border-radius: 4px; margin-bottom: 10px;
     }
 
-    .card-type {
-        font-size: 14px;
-        font-weight: 600;
-        text-transform: uppercase;
-        margin-bottom: 15px;
+    .card-type-logo {
+      position: absolute; top: 20px; right: 22px;
+      font-weight: 700; font-size: 11px; letter-spacing: 1px;
     }
 
     .card-number {
-        font-size: 20px;
-        letter-spacing: 2px;
-        margin-bottom: 15px;
-        display: block;
+      font-size: 16px; 
+      letter-spacing: 2.5px;
+      font-family: 'Courier New', monospace;
+      margin: 10px 0;
+      display: block;
+      opacity: 0.95;
     }
 
     .card-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+      display: flex; 
+      justify-content: space-between;
+      align-items: flex-end; 
+      margin-top: 10px;
     }
 
-    .card-holder {
-        font-size: 12px;
-        opacity: 0.8;
-    }
+    .footer-left { display: flex; flex-direction: column; }
+    .footer-right { display: flex; gap: 20px; text-align: right; }
+
+    .card-label { font-size: 8px; text-transform: uppercase; opacity: 0.7; margin-bottom: 2px; }
+    .card-value { font-size: 11px; font-weight: 500; letter-spacing: 0.5px; }
 
     .delete-card {
-        color: rgba(255, 255, 255, 0.8);
-        cursor: pointer;
-        font-size: 18px;
+      position: absolute; bottom: 18px; right: 22px;
+      width: 28px; height: 28px; background: rgba(255,255,255,0.1);
+      border-radius: 6px; display: flex; align-items: center;
+      justify-content: center; font-size: 12px; cursor: pointer;
+      transition: 0.2s;
     }
+    .delete-card:hover { background: rgba(255, 50, 50, 0.4); }
 
-    /* Yangi karta qo'shish tugmasi */
+    /* TUGMA */
     .add-card-btn {
-        background: #fff;
-        border: 2px dashed #7f4df2;
-        border-radius: 16px;
-        padding: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #7f4df2;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-        text-decoration: none;
-        width: 100%;
+      background: #fff; border: 1.5px dashed #7f4df2;
+      border-radius: 12px; padding: 15px;
+      display: flex; align-items: center; justify-content: center;
+      color: #7f4df2; font-size: 14px; font-weight: 600;
+      text-decoration: none;
     }
+  </style>
+</head>
+<body>
 
-    .add-card-btn:hover {
-        background: #f3f0ff;
-    }
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="page-header">
+        <i class="fa-solid fa-arrow-left back-btn" onclick="history.back()"></i>
+        <h2 style="font-size: 16px; margin: 0;">To'lov usullari</h2>
+      </div>
 
-    .add-card-btn i {
-        margin-right: 10px;
-    }
-
-    .info-text {
-        padding: 0 20px;
-        font-size: 13px;
-        color: #8b8e99;
-        text-align: center;
-    }
-</style>
-
-<div class="main-content">
-    <div class="page-header">
-        <a href="{% url 'profile' %}" class="back-btn">
-            <i class="fa-solid fa-arrow-left"></i>
-        </a>
-        <h2 style="font-size: 18px; margin: 0;">To'lov usullari</h2>
-    </div>
-
-    <div class="card-list">
+      <div class="card-list">
         <div class="bank-card">
-            <div class="card-type">Uzcard / Humo</div>
-            <span class="card-number">**** **** **** 8841</span>
-            <div class="card-footer">
-                <div>
-                    <div class="card-holder">Karta egasi</div>
-                    <div style="font-weight: 500;">{{ request.user.username|upper }}</div>
-                </div>
-                <div class="delete-card">
-                    <i class="fa-solid fa-trash-can"></i>
-                </div>
+          <div class="card-type-logo">UZCARD</div>
+          <div class="card-chip"></div>
+          
+          <span class="card-number">•••• •••• •••• 8841</span>
+          
+          <div class="card-footer">
+            <div class="footer-left">
+              <span class="card-label">Karta egasi</span>
+              <span class="card-value">ISM FAMILYA</span>
             </div>
+            
+            <div class="footer-right" style="margin-right: 40px;"> <div>
+                <span class="card-label">Muddat</span>
+                <span class="card-value">12/28</span>
+              </div>
+              <div>
+                <span class="card-label">CVV</span>
+                <span class="card-value">***</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="delete-card">
+            <i class="fa-solid fa-trash-can"></i>
+          </div>
         </div>
 
         <a href="{% url 'yangi_karta' %}" class="add-card-btn">
-            <i class="fa-solid fa-plus"></i>
-            Yangi karta qo'shish
+          <i class="fa-solid fa-plus" style="margin-right: 8px;"></i>
+          Yangi karta qo'shish
         </a>
+      </div>
     </div>
+  </div>
 
-    <div class="info-text">
-        <p><i class="fa-solid fa-lock" style="margin-right: 5px;"></i> To'lov ma'lumotlari xavfsiz himoyalangan va Uzum qoidalariga muvofiq saqlanadi.</p>
-    </div>
-</div>
-
-<script>
-    // Karta o'chirish tugmasi bosilganda (Oddiy effekt uchun)
-    document.querySelectorAll('.delete-card').forEach(item => {
-        item.addEventListener('click', function(e) {
-            if(confirm("Ushbu to'lov usulini o'chirmoqchimisiz?")) {
-                this.closest('.bank-card').style.display = 'none';
-            }
-        });
-    });
-</script>
-{% endblock main %}
+</body>
+</html>

@@ -169,8 +169,15 @@ class Like(BaseCreatedModel):
 
     def __str__(self):
         return f"{self.user.username} likes {self.product.name}"
-    
-    
+
+
 #carta saqlash modeli
 class User_carts(BaseCreatedModel):
+    karta_nomer = models.CharField(max_length=19)
+    cart_egasi = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='banks_carts')
+    muddat = models.CharField(max_length=4)
+    cvv = models.CharField(max_length=3)
+
+    def __str__(self):
+        return f"{self.cart_egasi.username} - {self.karta_nomer}"
     
