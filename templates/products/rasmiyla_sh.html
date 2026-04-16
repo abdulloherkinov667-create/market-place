@@ -1,201 +1,266 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Uzum Checkout - Premium</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <style>
-        :root {
-            --uzum: #7f4df2;
-            --payme: #00c1af;
-            --click: #008ae4;
-            --card-bg: #1a1a1a;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uzum Checkout - Secured</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body { background: #e5e5e5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    
+    .phone {
+      width: 360px; height: 720px; background: #000; border-radius: 40px;
+      padding: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      position: relative; border: 4px solid #333; overflow: hidden;
+    }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'SF Pro Display', sans-serif; }
-        
-        body { 
-            background: linear-gradient(135deg, #f4f5f7 0%, #e2e4e9 100%);
-            display: flex; justify-content: center; align-items: center; min-height: 100vh;
-        }
+    .screen {
+      width: 100%; height: 100%; background: #ffffff; border-radius: 28px;
+      overflow: hidden; display: flex; flex-direction: column; position: relative;
+    }
 
-        .phone {
-            width: 360px; height: 740px; background: #000; border-radius: 45px;
-            padding: 10px; border: 4px solid #333; position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            animation: fadeInPhone 0.8s ease-out;
-        }
+    /* MODAL */
+    .modal-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); z-index: 1000; display: none;
+      align-items: center; justify-content: center; backdrop-filter: blur(4px);
+    }
+    .modal-card {
+      width: 88%; background: #fff; border-radius: 20px; padding: 20px;
+      transform: scale(0.8); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .modal-card.active { transform: scale(1); }
+    
+    /* RASMDAGI ITEMLAR DIZAYNI */
+    .modal-item { 
+        background: #f8f9ff; 
+        border: 1.5px solid #edf0ff; 
+        border-radius: 16px; 
+        padding: 16px; 
+        margin-bottom: 12px; 
+        cursor: pointer; 
+        text-align: left;
+        transition: 0.2s;
+    }
+    .modal-item:active { background: #f0f2ff; }
+    .modal-item p { font-size: 14px; font-weight: 700; color: #1f2026; margin-bottom: 4px; }
+    .modal-item small { font-size: 12px; color: #8b8e99; display: block; }
 
-        @keyframes fadeInPhone {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    /* HEADER & CONTENT */
+    .top-bar { padding: 30px 20px 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #f0f0f0; }
+    .content { flex: 1; overflow-y: auto; padding: 20px; }
+    .section-title { font-size: 15px; font-weight: 700; margin: 15px 0 10px; }
+    
+    .input-box { margin-bottom: 12px; }
+    .input-box label { display: block; font-size: 11px; color: #999; margin-bottom: 4px; padding-left: 5px; }
+    .input-box input, .input-box textarea {
+      width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #eee;
+      background: #f9f9f9; font-size: 14px; outline: none;
+    }
+    
+    .error-border { border-color: #ff4d4d !important; background: #fff5f5 !important; }
 
-        .screen {
-            width: 100%; height: 100%; background: #fff; border-radius: 35px;
-            overflow: hidden; display: flex; flex-direction: column; position: relative;
-        }
+    .pay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .pay-opt {
+      border: 1.5px solid #eee; border-radius: 12px; padding: 12px;
+      text-align: center; cursor: pointer; transition: 0.3s;
+    }
+    .pay-opt.active { border-color: #7f4df2; background: #f7f3ff; color: #7f4df2; }
+    .pay-opt i { display: block; font-size: 18px; margin-bottom: 5px; }
+    .pay-opt span { font-size: 11px; font-weight: 600; }
 
-        .top-bar {
-            padding: 25px 20px 15px; display: flex; align-items: center; gap: 15px;
-            background: #fff; border-bottom: 1px solid #f0f0f0;
-        }
-        .back-btn {
-            width: 38px; height: 38px; background: #f5f5f5; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            text-decoration: none; color: #000; transition: 0.3s;
-        }
-        .back-btn:hover { background: #eee; }
+    .btn-submit {
+      width: 100%; padding: 15px; background: #7f4df2; color: #fff;
+      border: none; border-radius: 15px; font-weight: 700; margin-top: 10px; cursor: pointer;
+    }
 
-        .content { flex: 1; overflow-y: auto; padding: 20px; }
-        .section-title { font-size: 16px; font-weight: 700; margin-bottom: 15px; color: #1f2026; }
-
-        .input-box { margin-bottom: 15px; }
-        .input-box label { display: block; font-size: 12px; color: #8b8e99; margin-bottom: 5px; margin-left: 5px; }
-        .input-box input, .input-box textarea {
-            width: 100%; padding: 12px 15px; border-radius: 12px;
-            border: 1.5px solid #eee; background: #f9f9f9; outline: none;
-            transition: 0.3s; font-size: 14px;
-        }
-        .input-box input:focus { border-color: var(--uzum); background: #fff; }
-
-        .payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .pay-card {
-            border: 1.5px solid #eee; border-radius: 12px; padding: 12px;
-            cursor: pointer; transition: 0.3s; position: relative;
-            display: flex; flex-direction: column; align-items: center; gap: 5px;
-            color: #444;
-        }
-        .pay-card i { font-size: 20px; }
-        .pay-card span { font-size: 11px; font-weight: 600; }
-
-        /* Active States */
-        .pay-card[data-type="uzum"].active { border-color: var(--uzum); background: #f7f3ff; color: var(--uzum); }
-        .pay-card[data-type="payme"].active { border-color: var(--payme); background: #f0fffb; color: var(--payme); }
-        .pay-card[data-type="click"].active { border-color: var(--click); background: #f0f7ff; color: var(--click); }
-        .pay-card[data-type="cash"].active { border-color: #1f2026; background: #f4f4f4; color: #1f2026; }
-
-        .footer { padding: 15px 20px 30px; border-top: 1px solid #eee; background: #fff; }
-        .order-btn {
-            width: 100%; background: var(--uzum); color: #fff; border: none;
-            padding: 16px; border-radius: 14px; font-weight: 700; font-size: 16px;
-            cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px -5px rgba(127, 77, 242, 0.4);
-        }
-        .order-btn:active { transform: scale(0.98); }
-
-        .notch {
-            width: 150px; height: 30px; background: #000; position: absolute;
-            top: 0; left: 50%; transform: translateX(-50%); border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px; z-index: 10;
-        }
-    </style>
+    .notch { width: 60px; height: 20px; background: #000; position: absolute; top: 0; left: 50%; transform: translateX(-50%); border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 110; }
+  </style>
 </head>
 <body>
 
 <div class="phone">
-    <div class="notch"></div>
-    <div class="screen">
-        <div class="top-bar">
-            <a href="{% url 'Shoping_Cart_Html' %}" class="back-btn">
-                <i class="fa-solid fa-chevron-left"></i>
-            </a>
-            <span class="section-title" style="margin-bottom: 0">Rasmiylashtirish</span>
-        </div>
+  <div class="notch"></div>
 
-        <div class="content">
-            <form action="{% url 'upgdate_rasmiylash' order.id %}" method="POST" id="orderForm">
-                {% csrf_token %}
-
-                <input type="hidden" name="payment_method" id="payment_method_input" value="cash">
-
-                <div class="section-title">Yetkazib berish</div>
-                
-                <div class="input-box">
-                    <label>Telefon raqam</label>
-                    <input type="text" name="phone_number" id="phone" value="+998 " placeholder="+998 90 123 45 67" required>
-                </div>
-
-                <div class="input-box">
-                    <label>Manzil</label>
-                    <textarea name="address" rows="2" placeholder="Shahar, Ko'cha, Uy raqami" required></textarea>
-                </div>
-
-                <div class="section-title">To'lov usuli</div>
-                
-                <div class="payment-grid">
-                    <div class="pay-card active" data-type="cash" onclick="selectPay('cash')">
-                        <i class="fa-solid fa-money-bill-wave"></i>
-                        <span>Naqd pul</span>
-                    </div>
-                    <div class="pay-card" data-type="uzum" onclick="selectPay('uzum')">
-                        <i class="fa-solid fa-building-columns"></i>
-                        <span>Uzum Bank</span>
-                    </div>
-                    <div class="pay-card" data-type="payme" onclick="selectPay('payme')">
-                        <i class="fa-solid fa-wallet"></i>
-                        <span>Payme</span>
-                    </div>
-                    <div class="pay-card" data-type="click" onclick="selectPay('click')">
-                        <i class="fa-solid fa-mouse-pointer"></i>
-                        <span>Click</span>
-                    </div>
-                </div>
-
-                <div class="input-box" style="margin-top: 20px;">
-                    <label>Izoh</label>
-                    <input type="text" name="notes" placeholder="Kurer uchun eslatma...">
-                </div>
-            </form>
-        </div>
-
-        <div class="footer">
-            <button type="submit" form="orderForm" class="order-btn">
-                Tasdiqlash
-            </button>
-        </div>
+  <div class="modal-overlay" id="uModal">
+    <div class="modal-card" id="uModalContent">
+      <h4 id="uModalTitle" style="margin-bottom:20px; text-align:center; font-size: 18px;">Tanlang</h4>
+      <div id="uModalBody"></div>
+      <button onclick="closeUModal()" style="width:100%; margin-top:10px; border:none; background:none; color:#8b8e99; font-size:13px; font-weight: 500; cursor: pointer;">Yopish</button>
     </div>
+  </div>
+
+  <div class="screen">
+    <div class="top-bar">
+      <a href="{% url 'Shoping_Cart_Html' %}" style="color:#000;"><i class="fa-solid fa-chevron-left"></i></a>
+      <span style="font-weight:700; margin-left: 10px;">Rasmiylashtirish</span>
+    </div>
+
+    <div class="content">
+      <form action="{% url 'upgdate_rasmiylash' order.id %}" method="POST" id="orderForm" onsubmit="return validateForm()">
+        {% csrf_token %}
+        <input type="hidden" name="payment_method" id="p_method" value="cash">
+
+        <div class="section-title">Yetkazib berish</div>
+        <div class="input-box">
+          <label>Telefon</label>
+          <input type="text" name="phone_number" id="uPhone" value="+998 " required>
+        </div>
+
+        <div class="input-box">
+          <label>Manzil</label>
+          <textarea name="address" id="uAddr" rows="2" placeholder="Bosib tanlang..." readonly onclick="openAddr()"></textarea>
+        </div>
+
+        <div class="section-title">To'lov usuli</div>
+        <div class="pay-grid">
+          <div class="pay-opt active" data-v="cash" onclick="setPay('cash')">
+            <i class="fa-solid fa-money-bill-wave"></i><span>Naqd pul</span>
+          </div>
+          <div class="pay-opt" data-v="card" onclick="setPay('card')">
+            <i class="fa-solid fa-credit-card"></i><span>Karta</span>
+          </div>
+        </div>
+
+        <div id="cardSection" style="display:none; margin-top:15px;">
+          <div class="input-box">
+            <label>Karta raqami</label>
+            <input type="text" id="cNum" name="card_number" placeholder="Tanlash uchun bosing..." readonly onclick="openCard()">
+          </div>
+          <div style="display:flex; gap:10px;">
+            <input type="text" id="cExp" name="card_expire" placeholder="OO/YY" readonly style="width:50%; padding:12px; border-radius:12px; border:1.5px solid #eee; background:#f9f9f9;">
+            <input type="password" id="cCvv" name="card_cvv" placeholder="***" readonly style="width:50%; padding:12px; border-radius:12px; border:1.5px solid #eee; background:#f9f9f9;">
+          </div>
+        </div>
+
+        <div class="input-box" style="margin-top:15px;">
+          <label>Izoh</label>
+          <input type="text" name="notes" placeholder="Kurerga eslatma...">
+        </div>
+
+        <button type="submit" class="btn-submit">Tasdiqlash</button>
+      </form>
+    </div>
+  </div>
 </div>
 
 <script>
-    // To'lov usulini tanlash funksiyasi
-    function selectPay(type) {
-        // Hamma kartalardan 'active' klassini olib tashlash
-        document.querySelectorAll('.pay-card').forEach(card => {
-            card.classList.remove('active');
-        });
-        
-        // Tanlangan kartaga 'active' klassini qo'shish
-        const selectedId = document.querySelector(`.pay-card[data-type="${type}"]`);
-        if (selectedId) {
-            selectedId.classList.add('active');
-        }
+  const modal = document.getElementById('uModal');
+  const mContent = document.getElementById('uModalContent');
+  const mBody = document.getElementById('uModalBody');
 
-        // Backendga ketadigan yashirin input qiymatini o'zgartirish
-        document.getElementById("payment_method_input").value = type;
+  function openUModal(title) {
+    document.getElementById('uModalTitle').innerText = title;
+    modal.style.display = 'flex';
+    setTimeout(() => mContent.classList.add('active'), 10);
+  }
+
+  function closeUModal() {
+    mContent.classList.remove('active');
+    setTimeout(() => modal.style.display = 'none', 300);
+  }
+
+  // RASMDAGI MANZIL RO'YXATI
+  function openAddr() {
+    mBody.innerHTML = `
+      <div class="modal-item" onclick="fillAddr('Toshkent, Chilonzor 9, 12-uy')">
+        <p>Toshkent, Chilonzor 9</p>
+        <small>Uy manzili</small>
+      </div>
+      <div class="modal-item" onclick="fillAddr('Toshkent, Yunusobod, IT-Park')">
+        <p>Toshkent, Yunusobod</p>
+        <small>Ish manzili</small>
+      </div>`;
+    openUModal("Manzilni tanlang");
+  }
+
+  function fillAddr(val) {
+    document.getElementById('uAddr').value = val;
+    document.getElementById('uAddr').classList.remove('error-border');
+    closeUModal();
+  }
+
+  // TO'LOV VA RASMDAGI KARTALAR
+  function setPay(type) {
+    document.querySelectorAll('.pay-opt').forEach(el => el.classList.remove('active'));
+    document.querySelector(`[data-v="${type}"]`).classList.add('active');
+    document.getElementById('p_method').value = type;
+    document.getElementById('cardSection').style.display = (type === 'card') ? 'block' : 'none';
+    if(type === 'card') openCard();
+  }
+
+  function openCard() {
+    mBody.innerHTML = `
+      <div class="modal-item" onclick="fillCard('8600 1234 5678 9012', '12/26', '777')">
+        <p>8600 **** 9012</p>
+        <small>Muddati: 12/26</small>
+      </div>
+      <div class="modal-item" onclick="fillCard('9860 1111 2222 3333', '05/25', '123')">
+        <p>9860 **** 3333</p>
+        <small>Muddati: 05/25</small>
+      </div>`;
+    openUModal("Kartani tanlang");
+  }
+
+  function fillCard(num, exp, cvv) {
+    document.getElementById('cNum').value = num;
+    document.getElementById('cExp').value = exp;
+    document.getElementById('cCvv').value = cvv;
+    document.getElementById('cNum').classList.remove('error-border');
+    closeUModal();
+  }
+
+  // FORMADA TEKSHIRUV
+  function validateForm() {
+    let isValid = true;
+    const phone = document.getElementById('uPhone');
+    const addr = document.getElementById('uAddr');
+    const payMethod = document.getElementById('p_method').value;
+
+    if (phone.value.length < 17) {
+      phone.classList.add('error-border');
+      isValid = false;
+    } else {
+      phone.classList.remove('error-border');
     }
 
-    // Telefon raqami uchun maska
-    const phoneInput = document.getElementById("phone");
-    phoneInput.addEventListener("input", function (e) {
-        let value = phoneInput.value.replace(/\D/g, "");
+    if (addr.value === "") {
+      addr.classList.add('error-border');
+      isValid = false;
+    } else {
+      addr.classList.remove('error-border');
+    }
 
-        if (!value.startsWith("998")) {
-            value = "998" + value;
-        }
+    if (payMethod === 'card') {
+      const cNum = document.getElementById('cNum');
+      if (cNum.value === "") {
+        cNum.classList.add('error-border');
+        isValid = false;
+      } else {
+        cNum.classList.remove('error-border');
+      }
+    }
 
-        // Faqat 12 ta raqamgacha ruxsat (998 + 9 ta raqam)
-        value = value.substring(0, 12);
+    if (!isValid) alert("Iltimos, barcha maydonlarni to'ldiring!");
+    return isValid;
+  }
 
-        let formatted = "+";
-        if (value.length > 0) formatted += value.substring(0, 3);
-        if (value.length > 3) formatted += " " + value.substring(3, 5);
-        if (value.length > 5) formatted += " " + value.substring(5, 8);
-        if (value.length > 8) formatted += " " + value.substring(8, 10);
-        if (value.length > 10) formatted += " " + value.substring(10, 12);
-
-        phoneInput.value = formatted;
-    });
+  // Telefon maskasi
+  const pInput = document.getElementById("uPhone");
+  pInput.addEventListener("input", () => {
+    let v = pInput.value.replace(/\D/g, "");
+    if (!v.startsWith("998")) v = "998" + v;
+    v = v.substring(0, 12);
+    let res = "+";
+    if (v.length > 0) res += v.substring(0, 3);
+    if (v.length > 3) res += " " + v.substring(3, 5);
+    if (v.length > 5) res += " " + v.substring(5, 8);
+    if (v.length > 8) res += " " + v.substring(8, 10);
+    if (v.length > 10) res += " " + v.substring(10, 12);
+    pInput.value = res;
+  });
 </script>
 
 </body>

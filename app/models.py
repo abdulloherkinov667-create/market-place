@@ -110,7 +110,12 @@ class Order(BaseCreatedModel):
         CLICK = 'click', 'Click'
         PAYME = 'payme', 'Payme'
         UZUM = 'uzum', 'Uzum Bank'
-
+        
+    
+    karta_nomer = models.CharField(max_length=19) 
+    cart_egasi = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='order_banks_carts')
+    muddat = models.CharField(max_length=5) 
+    cvv = models.CharField(max_length=3)
     user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='orders')
     phone = models.CharField(max_length=20, blank=True, null=True)
     address = models.TextField(verbose_name="Zakar borishi kk bo'lgan manzil", blank=True, null=True)
@@ -171,13 +176,25 @@ class Like(BaseCreatedModel):
         return f"{self.user.username} likes {self.product.name}"
 
 
-#carta saqlash modeli
+#carta model
 class User_carts(BaseCreatedModel):
-    karta_nomer = models.CharField(max_length=19)
+    karta_nomer = models.CharField(max_length=19) 
     cart_egasi = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='banks_carts')
-    muddat = models.CharField(max_length=4)
+    muddat = models.CharField(max_length=5) 
     cvv = models.CharField(max_length=3)
 
+    @property
+    def masked_number(self):
+        clean_number = self.karta_nomer.replace(" ", "")
+        if len(clean_number) >= 16:
+            return f"{clean_number[:4]} **** **** {clean_number[-4:]}"
+        return clean_number
+
+    @property
+    def formatted_number(self):
+        """Kartani har 4 ta raqamdan keyin joy tashlab ko'rsatadi"""
+        clean_number = self.karta_nomer.replace(" ", "")
+        return " ".join([clean_number[i:i+4] for i in range(0, len(clean_number), i+4)])
+
     def __str__(self):
-        return f"{self.cart_egasi.username} - {self.karta_nomer}"
-    
+        return f"{self.cart_egasi.username} - {self.masked_number}"

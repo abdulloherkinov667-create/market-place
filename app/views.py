@@ -108,26 +108,27 @@ def shoping_cart_create(request):
 #rasmylashtirish html
 @login_required()
 def rasmiylashtirish_prod(request):
-    new_order = Order.objects.create(user_id = request.user.id)
+    cart_items = request.user.my_carts
+    if not cart_items.exists():
+        messages.error(request, "Savat bo'sh, rasmiylashtirish mumkin emas.")
+        return redirect('Shoping_Cart_Html')
+
+    new_order = Order.objects.create(user_id=request.user.id)
     new_order.save()
     
     order_id = new_order.id
-    order_item_list = request.user.my_carts
     
-    for i in order_item_list.all():
+    for i in cart_items.all():
         new_order_item = OrderItem.objects.create(
-            order_id = order_id,
-            count = 1,
-            product_id = i.product_id
+            order_id=order_id,
+            count=1,
+            product_id=i.product_id
         )
-        
         new_order_item.save()
-        cart_delete = ShopingModel.objects.filter(id=i.id)
-        cart_delete.delete()
+        ShopingModel.objects.filter(id=i.id).delete()
         
-    # Buyurtma rasmiylashtirildi xabari (qizil rangga mos error/class bilan ko‘rsatiladi)
     messages.error(request, "Buyurtmangiz muvaffaqiyatli berildi! Tez orada yetkazib beramiz.")
-    return render(request, 'products/rasmiyla_sh.html', context={ "order": new_order })
+    return render(request, 'products/rasmiyla_sh.html', context={"order": new_order})
 
 
 #upgdate qilish jarayoni
@@ -157,8 +158,20 @@ def upgdate_rasmiylash(request, pk):
     
     
 #tolov usullari html
+@login_required(login_url='login_viuw')
 def tolov_usullari(request):
-    return render(request, 'userlar/tolov_usul.html')
+    banks_carts = User_carts.objects.filter(cart_egasi=request.user)
+    return render(request, 'userlar/tolov_usul.html', {
+        'banks_carts': banks_carts
+    })
+
+#bank kartani ochirish uchun
+@login_required(login_url='login_viuw')
+def delete_card(request, pk):
+    card = User_carts.objects.filter(id=pk, cart_egasi=request.user)
+    if card.exists():
+        card.delete()
+    return redirect('tolov_usullari')
 
 
 #order html uchun
@@ -233,6 +246,14 @@ def catalog_html(request):
     return render(request, 'products/katalog.html')
 
 
+#shaxsiy malumot htmli bu 
+def shaxsiy_malumot(request):
+    saved_card = User_carts.objects.filter(cart_egasi=request.user).first()
+    return render(request, 'userlar/shaxsiy_malumot.html', {
+        'saved_card': saved_card,
+    })
+
+
 #qiqruv viuw
 # def search(request):
 #     if request.method == 'POST':
@@ -290,6 +311,11 @@ def kart_yarat(request):
         banks_cart_new.save()
         messages.success(request, "Yangi karta muvaffaqiyatli qo'shildi!")
         return redirect('profile')
+    
+    
+#xavsizlik html
+def xavsizlik(request):
+    return render(request, 'userlar/xavsizlik.html')
 
 
 

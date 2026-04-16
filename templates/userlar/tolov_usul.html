@@ -32,6 +32,15 @@
 
     /* KARTA LISTI */
     .card-list { padding: 15px; }
+    .card-carousel { position: relative; min-height: 220px; }
+    .carousel-item { position: absolute; inset: 0; opacity: 0; transform: scale(0.96); transition: opacity .35s ease, transform .35s ease; pointer-events: none; }
+    .carousel-item.active { opacity: 1; transform: scale(1); pointer-events: auto; position: relative; }
+    .carousel-controls { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 15px; }
+    .carousel-btn {
+      width: 48%; border: none; background: #fff; color: #7f4df2;
+      border-radius: 12px; padding: 12px 0; font-size: 14px; font-weight: 700;
+      cursor: pointer; box-shadow: 0 8px 16px rgba(0,0,0,.08);
+    }
 
     /* IXCHAM VA CHO'ZILGAN KARTA */
     .bank-card {
@@ -105,44 +114,88 @@
     <div class="notch"></div>
     <div class="screen">
       <div class="page-header">
-        <i class="fa-solid fa-arrow-left back-btn" onclick="history.back()"></i>
+        <i href="{% url 'tolov_usullari' %}" class="fa-solid fa-arrow-left back-btn" onclick="history.back()"></i>
         <h2 style="font-size: 16px; margin: 0;">To'lov usullari</h2>
       </div>
 
       <div class="card-list">
-        <div class="bank-card">
-          <div class="card-type-logo">UZCARD</div>
-          <div class="card-chip"></div>
-          
-          <span class="card-number">•••• •••• •••• 8841</span>
-          
-          <div class="card-footer">
-            <div class="footer-left">
-              <span class="card-label">Karta egasi</span>
-              <span class="card-value">ISM FAMILYA</span>
-            </div>
-            
-            <div class="footer-right" style="margin-right: 40px;"> <div>
-                <span class="card-label">Muddat</span>
-                <span class="card-value">12/28</span>
+        {% if banks_carts %}
+          <div class="card-carousel" id="cardCarousel">
+            {% for card in banks_carts %}
+              <div class="bank-card carousel-item{% if forloop.first %} active{% endif %}">
+                <div class="card-type-logo">UZCARD</div>
+                <div class="card-chip"></div>
+
+                <span class="card-number">{{ card.masked_number }}</span>
+
+                <div class="card-footer">
+                  <div class="footer-left">
+                    <span class="card-label">Karta egasi</span>
+                    <span class="card-value">{{ card.cart_egasi }}</span>
+                  </div>
+
+                  <div class="footer-right" style="margin-right: 40px;"> <div>
+                      <span class="card-label">Muddat</span>
+                      <span class="card-value">{{ card.muddat }}</span>
+                    </div>
+                    <div>
+                      <span class="card-label">CVV</span>
+                      <span class="card-value">***</span>
+                    </div>
+                  </div>
+                </div>
+
+                <a href="{% url 'delete_card' card.id %}" class="delete-card" onclick="return confirm('Karta o\'chirilsinmi?');">
+                  <i class="fa-solid fa-trash-can"></i>
+                </a>
               </div>
-              <div>
-                <span class="card-label">CVV</span>
-                <span class="card-value">***</span>
-              </div>
-            </div>
+            {% endfor %}
           </div>
 
-          <div class="delete-card">
-            <i class="fa-solid fa-trash-can"></i>
+          <div class="carousel-controls">
+            <button type="button" class="carousel-btn" id="prevCard"><i class="fa-solid fa-chevron-left"></i> Orqaga</button>
+            <button type="button" class="carousel-btn" id="nextCard">Oldinga <i class="fa-solid fa-chevron-right"></i></button>
           </div>
-        </div>
+        {% else %}
+          <div style="padding: 20px; color: #444; background: #fff; border-radius: 14px; text-align: center; margin-bottom: 15px;">
+            Hozircha karta qo'shilmagan. Quyidagi tugma orqali yangi karta qo'shing.
+          </div>
+        {% endif %}
 
         <a href="{% url 'yangi_karta' %}" class="add-card-btn">
           <i class="fa-solid fa-plus" style="margin-right: 8px;"></i>
           Yangi karta qo'shish
         </a>
       </div>
+
+      <script>
+        const carouselItems = document.querySelectorAll('.carousel-item');
+        let currentIndex = 0;
+
+        function showCard(index) {
+          carouselItems.forEach((item, i) => {
+            item.classList.toggle('active', i === index);
+          });
+        }
+
+        document.getElementById('prevCard')?.addEventListener('click', () => {
+          if (!carouselItems.length) return;
+          currentIndex = (currentIndex - 1 + carouselItems.length) % carouselItems.length;
+          showCard(currentIndex);
+        });
+
+        document.getElementById('nextCard')?.addEventListener('click', () => {
+          if (!carouselItems.length) return;
+          currentIndex = (currentIndex + 1) % carouselItems.length;
+          showCard(currentIndex);
+        });
+
+        setInterval(() => {
+          if (!carouselItems.length) return;
+          currentIndex = (currentIndex + 1) % carouselItems.length;
+          showCard(currentIndex);
+        }, 5000);
+      </script>
     </div>
   </div>
 

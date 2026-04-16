@@ -165,6 +165,7 @@
   </div>
 </div>
 
+{% if cart_items %}
 <div class="checkout-footer">
   <div class="summary-line">
     <span>Jami:</span>
@@ -172,6 +173,15 @@
   </div>
   <a href="{% url 'rasmiylashtirish_prod' %}"><button class="order-btn">Rasmiylashtirish</button></a>
 </div>
+{% else %}
+<div class="checkout-footer">
+  <div class="summary-line">
+    <span>Jami:</span>
+    <span class="total-price">0 so'm</span>
+  </div>
+  <button class="order-btn" disabled>Savatingiz bo'sh</button>
+</div>
+{% endif %}
 
 <script>
   function formatMoney(n) {

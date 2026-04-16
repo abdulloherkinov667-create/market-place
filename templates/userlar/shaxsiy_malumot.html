@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil Sozlamalari</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <style>
+    /* PHONE FRAME */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body { background: #e5e5e5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .phone { width: 360px; height: 720px; background: #000; border-radius: 40px; padding: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); position: relative; border: 4px solid #333; }
+    .screen { width: 100%; height: 100%; background: #ffffff; border-radius: 28px; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+    .notch { width: 60px; height: 20px; background: #000; position: absolute; top: 0; left: 50%; transform: translateX(-50%); border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 110; }
+
+    /* HEADER */
+    .top-header { padding: 35px 20px 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #f1f1f2; }
+    .top-header a { color: #1a1a1a; text-decoration: none; }
+
+    .content { flex: 1; padding: 20px; overflow-y: auto; scrollbar-width: none; }
+    .content::-webkit-scrollbar { display: none; }
+
+    /* AVATAR (TEGINILMADI) */
+    .avatar-wrapper { text-align: center; margin-bottom: 20px; }
+    .avatar-static { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #6366f1; }
+
+    /* INFO DISPLAY */
+    .section-title { font-size: 13px; font-weight: 800; color: #6366f1; margin: 15px 0 10px; text-transform: uppercase; }
+    .info-card { background: #f8f9fa; padding: 15px; border-radius: 18px; margin-bottom: 10px; }
+    .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+    .info-row:last-child { border: none; }
+    .label-text { color: #8e8e93; font-size: 12px; }
+    .value-text { color: #1a1a1a; font-size: 13.5px; font-weight: 600; }
+
+    /* DROPDOWN CONTAINER */
+    .edit-container { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
+    .edit-container.open { max-height: 1500px; }
+
+    /* BANNER UPLOAD SECTION */
+    .banner-upload {
+      width: 100%;
+      height: 120px;
+      background: #eee;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+      border: 2px dashed #6366f1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    .banner-upload img { width: 100%; height: 100%; object-fit: cover; position: absolute; }
+    .banner-hint { position: relative; z-index: 2; color: #6366f1; font-weight: 600; font-size: 12px; text-align: center; }
+
+    /* INPUTS */
+    .input-box { margin-bottom: 12px; }
+    .input-box label { display: block; font-size: 11px; color: #6366f1; margin-bottom: 4px; font-weight: 700; }
+    .input-field { width: 100%; padding: 12px; background: #f1f1f2; border: none; border-radius: 12px; outline: none; }
+
+    /* BANK CARD VIZUAL */
+    .bank-card-visual {
+      width: 100%; height: 160px;
+      background: linear-gradient(135deg, #1e1e1e 0%, #434343 100%);
+      border-radius: 20px; padding: 20px; color: white; margin-bottom: 15px;
+    }
+    .card-num-v { font-size: 18px; letter-spacing: 2px; margin: 15px 0; display: block; }
+
+    /* BUTTONS */
+    .btn-toggle { width: 100%; padding: 14px; background: #f1f1f2; color: #6366f1; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; margin-bottom: 10px; }
+    .btn-save { width: 100%; padding: 14px; background: #6366f1; color: #fff; border: none; border-radius: 12px; font-weight: 700; margin-top: 10px; }
+
+    #bannerInput { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      
+      <div class="top-header">
+        <a href="{% url 'profile' %}"><i class="fa-solid fa-arrow-left"></i></a>
+        <h2 style="font-size: 17px;">Profil</h2>
+      </div>
+
+      <div class="content">
+        <div class="avatar-wrapper">
+          <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=6366f1&color=fff" class="avatar-static" alt="User">
+        </div>
+
+        <div class="section-title">Ma'lumotlar</div>
+        <div class="info-card">
+          <div class="info-row"><span class="label-text">Username:</span><span class="value-text">@{{ request.user.username }}</span></div>
+          <div class="info-row"><span class="label-text">Ism:</span><span class="value-text">{{ request.user.first_name }}</span></div>
+          <div class="info-row"><span class="label-text">Familiya:</span><span class="value-text">{{ request.user.last_name }}</span></div>
+          <div class="info-row"><span class="label-text">Telefon:</span><span class="value-text">{{ request.user.phone }}</span></div>
+        </div>
+
+        <button class="btn-toggle" onclick="toggleEdit('userEdit')">
+           O'zgartirish
+        </button>
+        
+        <div id="userEdit" class="edit-container">
+          <form class="info-card">
+            
+            <label class="section-title" style="display: block;">Profil banneri</label>
+            <input type="file" id="bannerInput" accept="image/*">
+            <label for="bannerInput" class="banner-upload">
+              <div class="banner-hint">
+                <i class="fa-solid fa-image" style="font-size: 24px;"></i><br>
+                Banner rasmini tanlang
+              </div>
+            </label>
+
+            <div class="input-box"><label>Ism</label><input type="text" class="input-field" value="{{ request.user.first_name }}"></div>
+            <div class="input-box"><label>Familiya</label><input type="text" class="input-field" value="{{ request.user.last_name }}"></div>
+            <div class="input-box"><label>Telefon</label><input type="tel" class="input-field" value="{{ request.user.phone }}"></div>
+            <button type="button" class="btn-save">Saqlash</button>
+          </form>
+        </div>
+
+        <div class="section-title">Karta</div>
+        <div class="bank-card-visual">
+          <div style="width: 35px; height: 25px; background: #ffd700; border-radius: 4px;"></div>
+          <span class="card-num-v">{% if saved_card %}{{ saved_card.masked_number }}{% else %}8600 **** **** 9012{% endif %}</span>
+          <div style="font-size: 12px; opacity: 0.8;">{{ request.user.username|upper }}</div>
+        </div>
+
+        <a href="{% url 'yangi_karta' %}"><button class="btn-toggle" onclick="toggleEdit('cardEdit')">Kartani yangilash</button></a>
+
+        
+
+        <div style="height: 30px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleEdit(id) {
+      document.getElementById(id).classList.toggle('open');
+    }
+  </script>
+
+</body>
+</html>
