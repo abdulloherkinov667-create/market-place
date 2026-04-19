@@ -141,6 +141,8 @@ def upgdate_rasmiylash(request, pk):
         description = data.get('notes')
         payment_method = data.get('payment_method')
         
+        karta_egasi = data.get('karta_egasi')
+        
         db_order = Order.objects.filter(id=pk).first()
         
         if db_order:

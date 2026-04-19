@@ -112,10 +112,7 @@ class Order(BaseCreatedModel):
         UZUM = 'uzum', 'Uzum Bank'
         
     
-    karta_nomer = models.CharField(max_length=19) 
-    cart_egasi = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='order_banks_carts')
-    muddat = models.CharField(max_length=5) 
-    cvv = models.CharField(max_length=3)
+    
     user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='orders')
     phone = models.CharField(max_length=20, blank=True, null=True)
     address = models.TextField(verbose_name="Zakar borishi kk bo'lgan manzil", blank=True, null=True)
