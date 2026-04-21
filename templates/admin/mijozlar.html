@@ -102,7 +102,7 @@
       <div class="stats-card">
         <div class="stats-info">
           <div>Umumiy mijozlar</div>
-          <h2>1,248 ta</h2>
+          <h2>{{ users|length }} ta</h2>
         </div>
         <i class="fa-solid fa-users" style="font-size: 24px; opacity: 0.5;"></i>
       </div>
@@ -113,53 +113,35 @@
       </div>
 
       <div class="content">
-        <div class="customer-card">
-          <div class="cust-avatar">SA</div>
-          <div class="cust-details">
-            <div class="cust-name">Sardor Aliyev</div>
-            <div class="cust-meta">+998 90 123 45 67</div>
-          </div>
-          <div class="cust-price">
-            <div class="total-spent">18.7 mln</div>
-            <div class="order-count">12 ta buyurtma</div>
-          </div>
-        </div>
 
+        {% for user in users %}
         <div class="customer-card">
-          <div class="cust-avatar" style="background: #fff7ed; color: #ea580c;">NU</div>
-          <div class="cust-details">
-            <div class="cust-name">Nigora Umarova</div>
-            <div class="cust-meta">+998 93 987 65 43</div>
+          
+          <div class="cust-avatar" style="background: #faf5ff; color: #9333ea;">
+            {{ user.first_name|slice:":1" }}{{ user.last_name|slice:":1" }}
           </div>
-          <div class="cust-price">
-            <div class="total-spent">4.2 mln</div>
-            <div class="order-count">5 ta buyurtma</div>
-          </div>
-        </div>
 
-        <div class="customer-card">
-          <div class="cust-avatar" style="background: #f0fdf4; color: #16a34a;">JK</div>
           <div class="cust-details">
-            <div class="cust-name">Javohir Karimov</div>
-            <div class="cust-meta">+998 99 444 33 22</div>
+            <div class="cust-name">
+              {{ user.first_name }} {{ user.last_name }}
+            </div>
+            <div class="cust-meta">
+              {{ user.phone }}
+            </div>
           </div>
-          <div class="cust-price">
-            <div class="total-spent">950k</div>
-            <div class="order-count">2 ta buyurtma</div>
-          </div>
-        </div>
 
-        <div class="customer-card">
-          <div class="cust-avatar" style="background: #faf5ff; color: #9333ea;">DM</div>
-          <div class="cust-details">
-            <div class="cust-name">Dilshod Mirzayev</div>
-            <div class="cust-meta">+998 97 111 22 33</div>
-          </div>
           <div class="cust-price">
-            <div class="total-spent">25.0 mln</div>
-            <div class="order-count">24 ta buyurtma</div>
+            <div class="total-spent">
+              {{ user.total_spent|floatformat:0|intcomma }} so'm
+            </div>
+            <div class="order-count">
+              {{ user.order_count }} ta buyurtma
+            </div>
           </div>
+
         </div>
+        {% endfor %}
+
       </div>
 
       <nav class="navbar">

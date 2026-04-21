@@ -14,3 +14,25 @@ import requests
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+
+
+
+
+def update_order_status(request, order_id, new_status):
+    order = get_object_or_404(Order, id=order_id)
+    valid_statuses = [choice[0] for choice in Order.OrderStatusChoice.choices]
+    
+    if new_status in valid_statuses:
+        order.is_status = new_status
+        order.save()
+        messages.success(request, f"Buyurtma holati '{new_status}'ga o'zgartirildi.")
+    else:
+        messages.error(request, "Xato: Bunday status mavjud emas!")
+        
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+#userlarni htmlga chiqarish uchun viuw
+def customers(request):
+    users = Users.objects.filter(user_type='Clent') 
+    return render(request, 'customers.html', {'users': users})

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Orders Pro - Animated</title>
+  <title>Admin Orders Pro</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   
   <style>
@@ -35,39 +35,22 @@
     }
     .back-btn {
       width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;
-      background: #f1f3f5; border-radius: 10px; cursor: pointer; color: #333;
-      text-decoration: none;
+      background: #f1f3f5; border-radius: 10px; cursor: pointer; color: #333; text-decoration: none;
     }
     .header-title { font-size: 17px; font-weight: 700; color: #1a1a1a; flex: 1; margin-left: 15px; }
 
-    /* KASSA DASHBOARD - BOSILADIGAN QILINDI */
-    .kassa-link {
-      text-decoration: none;
-      display: block;
-      margin: 15px;
-    }
+    /* KASSA DASHBOARD */
+    .kassa-link { text-decoration: none; display: block; margin: 15px; }
     .kassa-preview {
       background: linear-gradient(135deg, #6366f1, #a855f7);
       padding: 15px; border-radius: 20px; color: #fff;
       box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
-      animation: slideDown 0.6s ease-out;
-      transition: transform 0.2s ease;
     }
-    .kassa-preview:active { transform: scale(0.98); }
-
-    @keyframes slideDown {
-      from { transform: translateY(-20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .kassa-preview div { font-size: 11px; opacity: 0.9; }
-    .kassa-preview h2 { font-size: 22px; margin-top: 5px; font-weight: 800; }
 
     /* SEARCH */
     .search-bar {
       margin: 0 15px 15px; background: #fff; padding: 10px 15px;
-      border-radius: 12px; display: flex; align-items: center; gap: 10px;
-      border: 1px solid #eee;
+      border-radius: 12px; display: flex; align-items: center; gap: 10px; border: 1px solid #eee;
     }
     .search-bar input { border: none; outline: none; font-size: 13px; width: 100%; }
 
@@ -77,26 +60,38 @@
     .order-card {
       background: #fff; border-radius: 18px; padding: 15px; margin-bottom: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.02); border: 1px solid #f0f0f0;
-      animation: fadeIn 0.8s ease;
-      transition: background 0.2s;
     }
-    .order-card:active { background: #f1f3f5; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .order-id { font-weight: 700; color: #333; font-size: 14px; }
-    .status-pill { font-size: 10px; padding: 4px 10px; border-radius: 20px; font-weight: 700; background: #fef3c7; color: #d97706; }
+    
+    /* STATUS PILL - DINAMIK RANG */
+    .status-pill { 
+      font-size: 11px; padding: 5px 12px; border-radius: 20px; font-weight: 700; 
+      transition: all 0.3s ease;
+    }
+
     .client-info { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
-    .avatar { width: 32px; height: 32px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: #eef2ff; color: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; }
     .price-tag { font-weight: 800; color: #6366f1; font-size: 15px; }
-    .more-options { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #bbb; border-radius: 50%; z-index: 5; }
+    .more-options { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #bbb; border-radius: 50%; }
 
     /* BOTTOM SHEET */
     .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: none; z-index: 100; backdrop-filter: blur(2px); }
     .sheet { position: absolute; bottom: -100%; left: 0; width: 100%; background: #fff; border-top-left-radius: 25px; border-top-right-radius: 25px; padding: 20px; z-index: 101; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
     .sheet.active { bottom: 0; }
     .handle { width: 40px; height: 4px; background: #e0e0e0; border-radius: 10px; margin: 0 auto 20px; }
-    .option { padding: 12px 15px; border-radius: 12px; margin-bottom: 5px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; font-weight: 600; color: #444; }
+    
+    /* STATUS OPTIONS GRID */
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .option { 
+        padding: 12px; border-radius: 12px; border: 1px solid #f0f0f0; 
+        display: flex; align-items: center; gap: 10px; cursor: pointer; 
+        font-size: 13px; font-weight: 600; transition: background 0.2s;
+        text-decoration: none;
+    }
+    .option:active { background: #f8f9fa; }
+    .option.full { grid-column: span 2; justify-content: center; }
 
     /* BOTTOM NAV */
     .navbar { position: absolute; bottom: 0; width: 100%; height: 75px; background: #fff; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; padding-bottom: 10px; }
@@ -115,31 +110,21 @@
 
       <div class="sheet" id="sheet">
         <div class="handle"></div>
-        <h3 style="font-size: 16px; margin-bottom: 15px; text-align: center;">Statusni o'zgartirish</h3>
-        <div class="option" style="color: #d97706;"><i class="fa-solid fa-hourglass-start"></i> Kutilmoqda</div>
-        <div class="option" style="color: #2563eb;"><i class="fa-solid fa-circle-check"></i> Tasdiqlandi</div>
-        <div class="option" style="color: #9333ea;"><i class="fa-solid fa-box"></i> Tayyorlanmoqda</div>
-        <div class="option" style="color: #059669;"><i class="fa-solid fa-truck"></i> Yo‘lga chiqdi</div>
-        <div class="option" style="color: #10b981;"><i class="fa-solid fa-box-open"></i> Yetkazildi</div>
-        <div class="option" style="color: #dc2626;"><i class="fa-solid fa-rectangle-xmark"></i> Bekor qilindi</div>
+        <h3 style="font-size: 14px; color: #888; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px;">Statusni yangilash</h3>
+        <div class="options-grid" id="status-options-container">
+           </div>
       </div>
 
       <header class="header">
-        <a href="{% url 'admin_home' %}" class="back-btn">
-          <i class="fa-solid fa-chevron-left"></i>
-        </a>
+        <a href="{% url 'admin_home' %}" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
         <div class="header-title">Buyurtmalar</div>
         <i class="fa-solid fa-ellipsis-vertical" style="color: #888;"></i>
       </header>
 
-      <a href="#" class="kassa-link"> 
+      <a href="{% url 'kassa' %}" class="kassa-link"> 
         <div class="kassa-preview">
-          <div>Bugungi umumiy tushum</div>
-          <h2><span class="count-money" data-target=""></span>{{ today_income|intcomma }} so'm</h2>
-          <div style="margin-top: 8px; display: flex; gap: 15px;">
-            <span><i class="fa-solid fa-arrow-up"></i> +<span class="count-percent" data-target="{{ growth_percent|default:0 }}">0</span>%</span>
-            <span><i class="fa-solid fa-wallet"></i> <span class="count-simple" data-target="{{ sales_count|default:0 }}">0</span> ta savdo</span>
-          </div>
+          <div style="font-size: 11px; opacity: 0.9;">Bugungi umumiy tushum</div>
+          <h2 style="font-size: 22px; margin-top: 5px; font-weight: 800;">{{ today_income|intcomma }} so'm</h2>
         </div>
       </a>
 
@@ -151,36 +136,34 @@
       <div class="content">
         {% if orders %}
           {% for order in orders %}
-            <a href="{% url 'buyurma_details' order.id %}" class="order-link">
-              <div class="order-card">
-                <div class="card-header">
-                  <span class="order-id">ORD-{{ order.id }}</span>
-                  <span class="status-pill">Tasdiqlandi</span>
-                </div>
+            <div class="order-card">
+              <div class="card-header">
+                <span class="order-id">ORD-{{ order.id }}</span>
+                <span class="status-pill" id="pill-{{ order.id }}" 
+                      style="background: #fef3c7; color: #d97706;">
+                  {{ order.is_status|default:"Kutilmoqda" }}
+                </span>
+              </div>
+              
+              <a href="{% url 'buyurma_details' order.id %}" class="order-link">
                 <div class="client-info">
-                  <div class="avatar" style="background: #eef2ff; color: #6366f1;">
-                    {{ order.user.username|slice:":1"|upper }}
-                  </div>
-                  <div>
+                  <div class="avatar">{{ order.user.username|slice:":1"|upper }}</div>
+                  <div style="flex: 1;">
                     <div style="font-size: 13px; font-weight: 700;">{{ order.user.username|capfirst }}</div>
-                    <div style="font-size: 11px; color: #999;">{{ order.address|truncatechars:30 }}</div>
+                    <div style="font-size: 11px; color: #999;">{{ order.address|truncatechars:25 }}</div>
                   </div>
-                  <div class="more-options" style="margin-left: auto;" onclick="event.preventDefault(); event.stopPropagation(); toggleSheet()">
+                  <div class="more-options" onclick="event.preventDefault(); event.stopPropagation(); openStatusSheet('{{ order.id }}')">
                      <i class="fa-solid fa-ellipsis"></i>
                   </div>
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                  <div class="price-tag">{{ order.total_order_price|intcomma }} so'm</div>
-                  <div style="font-size: 11px; color: #bbb;">{{ order.created_at|date:"H:i" }}</div>
-                </div>
+              </a>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                <div class="price-tag">{{ order.total_order_price|intcomma }} so'm</div>
+                <div style="font-size: 11px; color: #bbb;">{{ order.created_at|date:"H:i" }}</div>
               </div>
-            </a>
+            </div>
           {% endfor %}
-        {% else %}
-          <div style="text-align: center; padding: 40px 20px; color: #999;">
-            <i class="fa-solid fa-inbox" style="font-size: 48px; margin-bottom: 15px; display: block;"></i>
-            <p>Buyurtmalar mavjud emas</p>
-          </div>
         {% endif %}
       </div>
 
@@ -195,43 +178,49 @@
   </div>
 
   <script>
-    function animateCounters() {
-      const counters = [
-        { el: '.count-money', format: true },
-        { el: '.count-percent', format: false },
-        { el: '.count-simple', format: false }
+    function openStatusSheet(orderId) {
+      const container = document.getElementById('status-options-container');
+      
+      // Rasmdagi dizayn bo'yicha statuslar, ranglar va piktogrammalar
+      const statuses = [
+        { name: 'Kutilmoqda', icon: 'fa-hourglass-start', color: '#d97706', bg: '#fef3c7' },
+        { name: 'Tasdiqlandi', icon: 'fa-check-circle', color: '#2563eb', bg: '#dbeafe' },
+        { name: 'Tayyorlanmoqda', icon: 'fa-box', color: '#9333ea', bg: '#f3e8ff' },
+        { name: 'Yo‘lga chiqdi', icon: 'fa-truck', color: '#059669', bg: '#d1fae5' },
+        { name: 'Yetkazildi', icon: 'fa-box-open', color: '#10b981', bg: '#ecfdf5' },
+        { name: 'Bekor qilindi', icon: 'fa-xmark-square', color: '#dc2626', bg: '#fee2e2' },
+        { name: 'Qaytarildi', icon: 'fa-rotate-left', color: '#4b5563', bg: '#f3f4f6', full: true }
       ];
 
-      counters.forEach(item => {
-        const element = document.querySelector(item.el);
-        if(!element) return;
-        const target = +element.getAttribute('data-target');
-        const duration = 1500;
-        const startTime = performance.now();
-
-        function updateCount(currentTime) {
-          const elapsedTime = currentTime - startTime;
-          const progress = Math.min(elapsedTime / duration, 1);
-          const easeOutQuad = t => t * (2 - t);
-          const currentCount = Math.floor(easeOutQuad(progress) * target);
-
-          if (item.format) {
-            element.innerText = currentCount.toLocaleString();
-          } else {
-            element.innerText = currentCount;
-          }
-
-          if (progress < 1) {
-            requestAnimationFrame(updateCount);
-          } else {
-            element.innerText = item.format ? target.toLocaleString() : target;
-          }
-        }
-        requestAnimationFrame(updateCount);
+      container.innerHTML = '';
+      statuses.forEach(status => {
+        const url = `/order/update/${orderId}/${status.name}/`; 
+        
+        const option = document.createElement('a');
+        option.href = url;
+        option.className = `option ${status.full ? 'full' : ''}`;
+        option.style.color = status.color;
+        option.innerHTML = `<i class="fa-solid ${status.icon}"></i> ${status.name}`;
+        
+        // Bosilganda UI-ni darhol yangilash
+        option.onclick = (e) => {
+            updatePillUI(orderId, status.name, status.color, status.bg);
+        };
+        
+        container.appendChild(option);
       });
+
+      toggleSheet();
     }
 
-    window.onload = animateCounters;
+    function updatePillUI(orderId, name, color, bg) {
+        const pill = document.getElementById(`pill-${orderId}`);
+        if(pill) {
+            pill.innerText = name;
+            pill.style.color = color;
+            pill.style.background = bg;
+        }
+    }
 
     function toggleSheet() {
       const sheet = document.getElementById('sheet');

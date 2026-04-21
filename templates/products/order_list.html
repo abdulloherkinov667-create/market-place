@@ -107,7 +107,28 @@
         {% for i in request.user.orders.all %}
         <div class="order-card">
             
-          <div class="status-badge">{{ i.is_status }}</div>
+          <style>
+              .status-badge { padding: 5px 10px; border-radius: 5px; font-weight: bold; color: white; }
+              .status-pending { background-color: #d97706; } /* Kutilmoqda */
+              .status-confirmed { background-color: #2563eb; } /* Tasdiqlandi */
+              .status-processing { background-color: #9333ea; } /* Tayyorlanmoqda */
+              .status-shipped { background-color: #059669; } /* Yo'lga chiqdi */
+              .status-delivered { background-color: #10b981; } /* Yetkazildi */
+              .status-cancelled { background-color: #dc2626; } /* Bekor qilindi */
+              .status-returned { background-color: #64748b; } /* Qaytarildi */
+          </style>
+
+          <div class="status-badge 
+              {% if i.is_status == 'Kutilmoqda' %}status-pending
+              {% elif i.is_status == 'Tasdiqlandi' %}status-confirmed
+              {% elif i.is_status == 'Tayyorlanmoqda' %}status-processing
+              {% elif i.is_status == 'Yo‘lga chiqdi' %}status-shipped
+              {% elif i.is_status == 'Yetkazildi' %}status-delivered
+              {% elif i.is_status == 'Bekor qilindi' %}status-cancelled
+              {% elif i.is_status == 'Qaytarildi' %}status-returned
+              {% endif %}">
+              {{ i.is_status }}
+          </div>
           
           <div class="order-id-row">
             <b>Buyurtma №{{ i.id }}</b>

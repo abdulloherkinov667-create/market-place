@@ -12,6 +12,10 @@ from app.views import (
     shaxsiy_malumot, xavsizlik
 )
 
+from app.user_viuw import (
+    update_order_status, customers
+)
+
 from app.admin_viuw import (
     admin_home, buyurtma_admin, buyurma_details, clent_html, kassa_html,
     hisobothtml, today_income
@@ -50,6 +54,8 @@ urlpatterns = [
     path('yetkazib_berish_manzili/', yetkazib_berish_manzili, name='yetkazib_berish_manzili'),
     path('shaxsiy_malumot/', shaxsiy_malumot, name='shaxsiy_malumotlar_user'),
     path('xavsizlik/', xavsizlik, name='xavsizlik'),
+    path('mijozlar/', customers, name='mijozlar'),
+    
     
     #shop cart 
     path('shoping_cart/', ShopingCartHtml.as_view(), name='Shoping_Cart_Html'),
@@ -68,6 +74,9 @@ urlpatterns = [
     path('login_viuw/', login_viuw, name='login_viuw'),
     path('logout/', logout_html, name='logout_html'),
     path('user_logout/', user_logout, name='user_logout'),
+    
+    #status
+    path('order/update/<int:order_id>/<str:new_status>/', update_order_status, name='update_order_status'),
     
     #GOOGLE bilan registr qilish uchun url
     path('accounts/', include('allauth.urls')),

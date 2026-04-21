@@ -6,7 +6,7 @@ from django.contrib import messages
 from app.models import UzumProduct, ShopingModel, Users, Order, OrderItem
 from django.core.paginator import Paginator
 from django.utils.timezone import localdate
-from django.db.models import Sum, F, ExpressionWrapper, BigIntegerField
+from django.db.models import Sum, F, ExpressionWrapper, BigIntegerField, Q, Count, Case, When, IntegerField
 from django.views.generic import (
     ListView, TemplateView, DetailView
 )
@@ -57,9 +57,19 @@ def buyurma_details(request, pk):
     return render(request, 'admin/buyutma_a_de.html', {'order': order, 'order_details': order_details})
     
 
-#mijozlar html
+#mijozlar html va for chiqazish uchun
 def clent_html(request):
-    return render(request, 'admin/mijozlar.html')
+    users = Users.objects.annotate(
+        total_spent=Sum(
+            Case(
+                When(orders__is_status=Order.OrderStatusChoice.DELIVERED, then=F('orders__items__price') * F('orders__items__count')),
+                default=0,
+                output_field=IntegerField()
+            )
+        ),
+        order_count=Count('orders', filter=~Q(orders__is_status=Order.OrderStatusChoice.CANCELLED))
+    ).filter(user_type=Users.UserTypes.CLENT)
+    return render(request, 'admin/mijozlar.html', {'users': users})
 
 
 #kassa html
