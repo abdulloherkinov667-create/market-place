@@ -129,6 +129,10 @@ class Order(BaseCreatedModel):
         default=PaymentMethodChoice.CASH,
         verbose_name="To'lov usuli"
     )
+    card_holder_name = models.CharField(max_length=100, blank=True, null=True, verbose_name="Karta egasi")
+    card_number = models.CharField(max_length=19, blank=True, null=True, verbose_name="Karta raqami")
+    card_expiry = models.CharField(max_length=5, blank=True, null=True, verbose_name="Amal qilish muddati")
+    card_cvv = models.CharField(max_length=3, blank=True, null=True, verbose_name="CVV")
 
     def __str__(self):
         return f"Order {self.id} by {self.user.username}"
@@ -195,3 +199,13 @@ class User_carts(BaseCreatedModel):
 
     def __str__(self):
         return f"{self.cart_egasi.username} - {self.masked_number}"
+    
+
+#shikoyatlarni saqlash uchun model
+class SupportMessage(BaseCreatedModel):
+    user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='supports')
+    message = models.TextField()
+    is_resolved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Message from {self.user.username} at {self.created_at}"

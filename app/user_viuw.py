@@ -36,3 +36,8 @@ def update_order_status(request, order_id, new_status):
 def customers(request):
     users = Users.objects.filter(user_type='Clent') 
     return render(request, 'customers.html', {'users': users})
+
+
+#yangi manzil qoshish html uchun viuw
+def add_address(request):
+    return render(request, 'userlar/add_address.html')

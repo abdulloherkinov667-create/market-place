@@ -1,7 +1,6 @@
 from django.apps import AppConfig
 import threading
 import asyncio
-from .main import main as bot_main  # main.py dagi main funksiyasini import qilamiz
 
 class AppConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
@@ -15,5 +14,6 @@ class AppConfig(AppConfig):
             bot_thread.start()
 
     def start_bot(self):
+        from .main import main as bot_main  # takror import
         # Botni asyncio loopda ishga tushiramiz
         asyncio.run(bot_main())

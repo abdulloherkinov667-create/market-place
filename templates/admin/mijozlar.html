@@ -73,6 +73,7 @@
       background: #eef2ff; color: #6366f1;
       display: flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: 16px;
+      text-transform: uppercase;
     }
     .cust-details { flex: 1; }
     .cust-name { font-size: 14px; font-weight: 700; color: #333; margin-bottom: 2px; }
@@ -118,28 +119,37 @@
         <div class="customer-card">
           
           <div class="cust-avatar" style="background: #faf5ff; color: #9333ea;">
-            {{ user.first_name|slice:":1" }}{{ user.last_name|slice:":1" }}
+            {% if user.first_name %}
+                {{ user.first_name|slice:":1" }}{{ user.last_name|slice:":1" }}
+            {% else %}
+                {{ user.username|slice:":2" }}
+            {% endif %}
           </div>
 
           <div class="cust-details">
             <div class="cust-name">
-              {{ user.first_name }} {{ user.last_name }}
+              {% if user.first_name %}
+                {{ user.first_name }} {{ user.last_name }}
+              {% else %}
+                {{ user.username }} {% endif %}
             </div>
             <div class="cust-meta">
-              {{ user.phone }}
+              {{ user.phone|default:"Telefon kiritilmagan" }}
             </div>
           </div>
 
           <div class="cust-price">
             <div class="total-spent">
-              {{ user.total_spent|floatformat:0|intcomma }} so'm
+              {{ user.total_spent|default:0|floatformat:0|intcomma }} so'm
             </div>
             <div class="order-count">
-              {{ user.order_count }} ta buyurtma
+              {{ user.order_count|default:0 }} ta buyurtma
             </div>
           </div>
 
         </div>
+        {% empty %}
+          <div style="text-align: center; margin-top: 20px; color: #999;">Mijozlar topilmadi.</div>
         {% endfor %}
 
       </div>

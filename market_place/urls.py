@@ -13,12 +13,12 @@ from app.views import (
 )
 
 from app.user_viuw import (
-    update_order_status, customers
+    update_order_status, customers, add_address
 )
 
 from app.admin_viuw import (
     admin_home, buyurtma_admin, buyurma_details, clent_html, kassa_html,
-    hisobothtml, today_income
+    hisobothtml, today_income, get_users_count
 )
 
 urlpatterns = [
@@ -31,6 +31,7 @@ urlpatterns = [
     path('mijozlar/', clent_html, name='mijozlar'),
     path('kassa/', kassa_html, name='kassa'),   
     path('hisobothtml/', hisobothtml, name='hisobothtml'),
+    path('get_users_count/', get_users_count, name='get_users_count'),
         
     #product
     path('', home_page, name='home_page'),
@@ -55,6 +56,7 @@ urlpatterns = [
     path('shaxsiy_malumot/', shaxsiy_malumot, name='shaxsiy_malumotlar_user'),
     path('xavsizlik/', xavsizlik, name='xavsizlik'),
     path('mijozlar/', customers, name='mijozlar'),
+    path('add_address/', add_address, name='add_address'),
     
     
     #shop cart 
@@ -81,7 +83,7 @@ urlpatterns = [
     #GOOGLE bilan registr qilish uchun url
     path('accounts/', include('allauth.urls')),
     
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     urlpatterns += static(

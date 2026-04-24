@@ -108,27 +108,29 @@ def shoping_cart_create(request):
 #rasmylashtirish html
 @login_required()
 def rasmiylashtirish_prod(request):
-    cart_items = request.user.my_carts
+    cart_items = request.user.my_carts.all()
     if not cart_items.exists():
         messages.error(request, "Savat bo'sh, rasmiylashtirish mumkin emas.")
         return redirect('Shoping_Cart_Html')
 
-    new_order = Order.objects.create(user_id=request.user.id)
-    new_order.save()
+    new_order = Order.objects.create(user=request.user)
     
-    order_id = new_order.id
-    
-    for i in cart_items.all():
-        new_order_item = OrderItem.objects.create(
-            order_id=order_id,
+    for item in cart_items:
+        OrderItem.objects.create(
+            order=new_order,
+            product_id=item.product_id,
             count=1,
-            product_id=i.product_id
+            price=item.product.price
         )
-        new_order_item.save()
-        ShopingModel.objects.filter(id=i.id).delete()
-        
-    messages.error(request, "Buyurtmangiz muvaffaqiyatli berildi! Tez orada yetkazib beramiz.")
-    return render(request, 'products/rasmiyla_sh.html', context={"order": new_order})
+    
+    cart_items.delete()
+    
+    user_cards = User_carts.objects.filter(cart_egasi=request.user)
+    
+    return render(request, 'products/rasmiyla_sh.html', {
+        "order": new_order,
+        "user_cards": user_cards
+    })
 
 
 #upgdate qilish jarayoni
@@ -140,8 +142,10 @@ def upgdate_rasmiylash(request, pk):
         address = data.get('address')
         description = data.get('notes')
         payment_method = data.get('payment_method')
-        
-        karta_egasi = data.get('karta_egasi')
+        card_holder_name = data.get('karta_egasi')  # assuming this is card_holder_name
+        card_number = data.get('card_number')
+        card_expiry = data.get('card_expire')
+        card_cvv = data.get('card_cvv')
         
         db_order = Order.objects.filter(id=pk).first()
         
@@ -150,6 +154,11 @@ def upgdate_rasmiylash(request, pk):
             db_order.address = address
             db_order.description = description
             db_order.payment_method = payment_method
+            if payment_method == 'card':
+                db_order.card_holder_name = card_holder_name
+                db_order.card_number = card_number
+                db_order.card_expiry = card_expiry
+                db_order.card_cvv = card_cvv
             db_order.is_status = Order.OrderStatusChoice.CONFIRMED
             db_order.save()
             

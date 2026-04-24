@@ -9,74 +9,34 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background: #e5e5e5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .phone { width: 360px; height: 720px; background: #000; border-radius: 40px; padding: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); position: relative; border: 4px solid #333; overflow: hidden; }
+    .screen { width: 100%; height: 100%; background: #ffffff; border-radius: 28px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
     
-    .phone {
-      width: 360px; height: 720px; background: #000; border-radius: 40px;
-      padding: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-      position: relative; border: 4px solid #333; overflow: hidden;
-    }
-
-    .screen {
-      width: 100%; height: 100%; background: #ffffff; border-radius: 28px;
-      overflow: hidden; display: flex; flex-direction: column; position: relative;
-    }
-
     /* MODAL */
-    .modal-overlay {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6); z-index: 1000; display: none;
-      align-items: center; justify-content: center; backdrop-filter: blur(4px);
-    }
-    .modal-card {
-      width: 88%; background: #fff; border-radius: 20px; padding: 20px;
-      transform: scale(0.8); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
+    .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+    .modal-card { width: 88%; background: #fff; border-radius: 20px; padding: 20px; transform: scale(0.8); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .modal-card.active { transform: scale(1); }
-    
-    /* RASMDAGI ITEMLAR DIZAYNI */
-    .modal-item { 
-        background: #f8f9ff; 
-        border: 1.5px solid #edf0ff; 
-        border-radius: 16px; 
-        padding: 16px; 
-        margin-bottom: 12px; 
-        cursor: pointer; 
-        text-align: left;
-        transition: 0.2s;
-    }
+    .modal-item { background: #f8f9ff; border: 1.5px solid #edf0ff; border-radius: 16px; padding: 16px; margin-bottom: 12px; cursor: pointer; text-align: left; transition: 0.2s; }
     .modal-item:active { background: #f0f2ff; }
     .modal-item p { font-size: 14px; font-weight: 700; color: #1f2026; margin-bottom: 4px; }
     .modal-item small { font-size: 12px; color: #8b8e99; display: block; }
 
-    /* HEADER & CONTENT */
+    /* CONTENT */
     .top-bar { padding: 30px 20px 15px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #f0f0f0; }
     .content { flex: 1; overflow-y: auto; padding: 20px; }
     .section-title { font-size: 15px; font-weight: 700; margin: 15px 0 10px; }
-    
     .input-box { margin-bottom: 12px; }
     .input-box label { display: block; font-size: 11px; color: #999; margin-bottom: 4px; padding-left: 5px; }
-    .input-box input, .input-box textarea {
-      width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #eee;
-      background: #f9f9f9; font-size: 14px; outline: none;
-    }
+    .input-box input, .input-box textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #eee; background: #f9f9f9; font-size: 14px; outline: none; }
     
-    .error-border { border-color: #ff4d4d !important; background: #fff5f5 !important; }
-
     .pay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .pay-opt {
-      border: 1.5px solid #eee; border-radius: 12px; padding: 12px;
-      text-align: center; cursor: pointer; transition: 0.3s;
-    }
+    .pay-opt { border: 1.5px solid #eee; border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; transition: 0.3s; }
     .pay-opt.active { border-color: #7f4df2; background: #f7f3ff; color: #7f4df2; }
-    .pay-opt i { display: block; font-size: 18px; margin-bottom: 5px; }
-    .pay-opt span { font-size: 11px; font-weight: 600; }
-
-    .btn-submit {
-      width: 100%; padding: 15px; background: #7f4df2; color: #fff;
-      border: none; border-radius: 15px; font-weight: 700; margin-top: 10px; cursor: pointer;
-    }
-
+    .btn-submit { width: 100%; padding: 15px; background: #7f4df2; color: #fff; border: none; border-radius: 15px; font-weight: 700; margin-top: 10px; cursor: pointer; }
     .notch { width: 60px; height: 20px; background: #000; position: absolute; top: 0; left: 50%; transform: translateX(-50%); border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 110; }
+    
+    /* Hidden Containers */
+    #addressList, #cardList { display: none; }
   </style>
 </head>
 <body>
@@ -87,7 +47,8 @@
   <div class="modal-overlay" id="uModal">
     <div class="modal-card" id="uModalContent">
       <h4 id="uModalTitle" style="margin-bottom:20px; text-align:center; font-size: 18px;">Tanlang</h4>
-      <div id="uModalBody"></div>
+      <div id="uModalBody">
+        </div>
       <button onclick="closeUModal()" style="width:100%; margin-top:10px; border:none; background:none; color:#8b8e99; font-size:13px; font-weight: 500; cursor: pointer;">Yopish</button>
     </div>
   </div>
@@ -117,21 +78,25 @@
         <div class="section-title">To'lov usuli</div>
         <div class="pay-grid">
           <div class="pay-opt active" data-v="cash" onclick="setPay('cash')">
-            <i class="fa-solid fa-money-bill-wave"></i><span>Naqd pul</span>
+            <i class="fa-solid fa-money-bill-wave"></i><br><span>Naqd pul</span>
           </div>
           <div class="pay-opt" data-v="card" onclick="setPay('card')">
-            <i class="fa-solid fa-credit-card"></i><span>Karta</span>
+            <i class="fa-solid fa-credit-card"></i><br><span>Karta</span>
           </div>
         </div>
 
         <div id="cardSection" style="display:none; margin-top:15px;">
           <div class="input-box">
+            <label>Karta egasi</label>
+            <input type="text" name="karta_egasi" id="cHolder" placeholder="Karta egasi ismi">
+          </div>
+          <div class="input-box">
             <label>Karta raqami</label>
-            <input type="text" id="cNum" name="card_number" placeholder="Tanlash uchun bosing..." readonly onclick="openCard()">
+            <input type="text" name="card_number" id="cNum" placeholder="1234 5678 9012 3456">
           </div>
           <div style="display:flex; gap:10px;">
-            <input type="text" id="cExp" name="card_expire" placeholder="OO/YY" readonly style="width:50%; padding:12px; border-radius:12px; border:1.5px solid #eee; background:#f9f9f9;">
-            <input type="password" id="cCvv" name="card_cvv" placeholder="***" readonly style="width:50%; padding:12px; border-radius:12px; border:1.5px solid #eee; background:#f9f9f9;">
+            <input type="text" name="card_expire" id="cExp" placeholder="OO/YY" style="width:50%; padding:12px; border-radius:12px; border:1.5px solid #eee; background:#f9f9f9;">
+            <input type="password" name="card_cvv" id="cCvv" placeholder="***" style="width:50%; padding:12px; border-radius:12px; border:1.5px solid #eee; background:#f9f9f9;">
           </div>
         </div>
 
@@ -146,13 +111,38 @@
   </div>
 </div>
 
+<div id="addressList">
+  <div class="modal-item" onclick="fillAddr('Toshkent, Chilonzor 9, 12-uy')">
+    <p>Toshkent, Chilonzor 9</p>
+    <small>Uy manzili</small>
+  </div>
+  <div class="modal-item" onclick="fillAddr('Toshkent, Yunusobod, IT-Park')">
+    <p>Toshkent, Yunusobod</p>
+    <small>Ish manzili</small>
+  </div>
+</div>
+
+<div id="cardList">
+  {% if user_cards %}
+    {% for card in user_cards %}
+      <div class="modal-item" onclick="fillCard('{{ card.karta_nomer }}', '{{ card.muddat }}', '{{ card.cvv }}', '{{ card.cart_egasi.username }}')">
+        <p>{{ card.masked_number }}</p>
+        <small>Muddati: {{ card.muddat }}</small>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p style="text-align:center; padding:20px; color:#999;">Sizda saqlangan kartalar yo'q</p>
+  {% endif %}
+</div>
+
 <script>
   const modal = document.getElementById('uModal');
   const mContent = document.getElementById('uModalContent');
   const mBody = document.getElementById('uModalBody');
 
-  function openUModal(title) {
+  function openUModal(title, contentHtml) {
     document.getElementById('uModalTitle').innerText = title;
+    mBody.innerHTML = contentHtml;
     modal.style.display = 'flex';
     setTimeout(() => mContent.classList.add('active'), 10);
   }
@@ -162,27 +152,16 @@
     setTimeout(() => modal.style.display = 'none', 300);
   }
 
-  // RASMDAGI MANZIL RO'YXATI
   function openAddr() {
-    mBody.innerHTML = `
-      <div class="modal-item" onclick="fillAddr('Toshkent, Chilonzor 9, 12-uy')">
-        <p>Toshkent, Chilonzor 9</p>
-        <small>Uy manzili</small>
-      </div>
-      <div class="modal-item" onclick="fillAddr('Toshkent, Yunusobod, IT-Park')">
-        <p>Toshkent, Yunusobod</p>
-        <small>Ish manzili</small>
-      </div>`;
-    openUModal("Manzilni tanlang");
+    const html = document.getElementById('addressList').innerHTML;
+    openUModal("Manzilni tanlang", html);
   }
 
   function fillAddr(val) {
     document.getElementById('uAddr').value = val;
-    document.getElementById('uAddr').classList.remove('error-border');
     closeUModal();
   }
 
-  // TO'LOV VA RASMDAGI KARTALAR
   function setPay(type) {
     document.querySelectorAll('.pay-opt').forEach(el => el.classList.remove('active'));
     document.querySelector(`[data-v="${type}"]`).classList.add('active');
@@ -192,62 +171,28 @@
   }
 
   function openCard() {
-    mBody.innerHTML = `
-      <div class="modal-item" onclick="fillCard('8600 1234 5678 9012', '12/26', '777')">
-        <p>8600 **** 9012</p>
-        <small>Muddati: 12/26</small>
-      </div>
-      <div class="modal-item" onclick="fillCard('9860 1111 2222 3333', '05/25', '123')">
-        <p>9860 **** 3333</p>
-        <small>Muddati: 05/25</small>
-      </div>`;
-    openUModal("Kartani tanlang");
+    const html = document.getElementById('cardList').innerHTML;
+    openUModal("Kartani tanlang", html);
   }
 
-  function fillCard(num, exp, cvv) {
+  function fillCard(num, exp, cvv, holder) {
     document.getElementById('cNum').value = num;
     document.getElementById('cExp').value = exp;
     document.getElementById('cCvv').value = cvv;
-    document.getElementById('cNum').classList.remove('error-border');
+    document.getElementById('cHolder').value = holder;
     closeUModal();
   }
 
-  // FORMADA TEKSHIRUV
   function validateForm() {
-    let isValid = true;
-    const phone = document.getElementById('uPhone');
-    const addr = document.getElementById('uAddr');
-    const payMethod = document.getElementById('p_method').value;
-
-    if (phone.value.length < 17) {
-      phone.classList.add('error-border');
-      isValid = false;
-    } else {
-      phone.classList.remove('error-border');
+    const phone = document.getElementById('uPhone').value;
+    const addr = document.getElementById('uAddr').value;
+    if (phone.length < 17 || addr === "") {
+      alert("Iltimos, telefon va manzilni to'ldiring!");
+      return false;
     }
-
-    if (addr.value === "") {
-      addr.classList.add('error-border');
-      isValid = false;
-    } else {
-      addr.classList.remove('error-border');
-    }
-
-    if (payMethod === 'card') {
-      const cNum = document.getElementById('cNum');
-      if (cNum.value === "") {
-        cNum.classList.add('error-border');
-        isValid = false;
-      } else {
-        cNum.classList.remove('error-border');
-      }
-    }
-
-    if (!isValid) alert("Iltimos, barcha maydonlarni to'ldiring!");
-    return isValid;
+    return true;
   }
 
-  // Telefon maskasi
   const pInput = document.getElementById("uPhone");
   pInput.addEventListener("input", () => {
     let v = pInput.value.replace(/\D/g, "");
@@ -262,6 +207,5 @@
     pInput.value = res;
   });
 </script>
-
 </body>
 </html>

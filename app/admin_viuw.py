@@ -1,11 +1,11 @@
-from unicodedata import name
+from django.utils import timezone
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_list_or_404
 from django.contrib import messages
-from app.models import UzumProduct, ShopingModel, Users, Order, OrderItem
+from app.models import UzumProduct, ShopingModel, Users, Order, OrderItem, Kategoriy
 from django.core.paginator import Paginator
-from django.utils.timezone import localdate
+from django.utils.timezone import localdate, timedelta
 from django.db.models import Sum, F, ExpressionWrapper, BigIntegerField, Q, Count, Case, When, IntegerField
 from django.views.generic import (
     ListView, TemplateView, DetailView
@@ -20,6 +20,17 @@ from django.contrib.auth import authenticate, login, logout
 
 def admin_home(request):
     return render(request, 'admin/admin_home.html')
+
+
+#admin home uchun mijoz sanoq viuwsi
+def get_users_count():
+    orders_count = Order.objects.count()
+
+    context = {
+        'orders_count': orders_count,
+    }
+    return JsonResponse(context)
+
 
 
 #bugungi tushum uchun alohida viuw
@@ -73,10 +84,54 @@ def clent_html(request):
 
 
 #kassa html
+#status yetgazildi ga ozgarganda jami qoldiq hisoblanadi!
 def kassa_html(request):
-    return render(request, 'admin/kassa.html')
+    total_balance = OrderItem.objects.filter(
+        order__is_status=Order.OrderStatusChoice.DELIVERED
+    ).aggregate(
+        total=Sum(F('price') * F('count'))
+    )['total'] or 0
+
+    #bugungi tushum hisobladim!
+    today = timezone.now().date()
+    today_in = OrderItem.objects.filter(order__is_status=Order.OrderStatusChoice.DELIVERED,order__created_at__date=today).aggregate(
+        total=Sum(F('price') * F('count'))
+    )['total'] or 0
+
+    today_out = 0 
+    recent_orders = Order.objects.annotate(total=Sum(F('items__price') * F('items__count'))).order_by('-created_at')[:10]
+
+    context = {
+        'total_balance': total_balance,
+        'today_in': today_in,
+        'today_out': today_out,
+        'recent_orders': recent_orders,
+    }
+    return render(request, 'admin/kassa.html', context)
 
 
 #hisobot html
 def hisobothtml(request):
-    return render(request, 'admin/hisobot.html')
+    order_delivered = Order.objects.filter(is_status=Order.OrderStatusChoice.DELIVERED)
+    result = order_delivered.aggregate(
+        total=Sum(F('items__price') * F('items__count'))
+    )
+    jami_daromat = result['total'] if result['total'] else 0
+    savdo_soni = order_delivered.count()
+    
+    #xozircha 1 kunlik chiqadi
+    oxirgi_oy = timezone.now() - timedelta(days=1)
+    #--------------------------------
+    
+    yangi_savdogarlik = Users.objects.filter(date_joined__gte=oxirgi_oy).count()
+    bekor_qil_buy = Order.objects.filter(is_status=Order.OrderStatusChoice.CANCELLED).count()
+    kategor = Kategoriy.objects.annotate(p_count=Count('products'))
+    
+    context = {
+        'jami_daromat': jami_daromat,
+        'savdo_soni': savdo_soni,
+        'yangi_savdogarlik': yangi_savdogarlik,
+        'bekor_qil_buy': bekor_qil_buy,
+        'kategor': kategor,
+    }
+    return render(request, 'admin/hisobot.html', context)

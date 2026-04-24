@@ -1,17 +1,15 @@
 {% load humanize %}
-
 <!DOCTYPE html>
 <html lang="uz">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Panel - Hisobotlar</title>
+  <title>Admin Dashboard Statik</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   
   <style>
-    /* ASOSIY KONTEYNER */
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background: #eef2f3; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
     
     .phone {
       width: 360px; height: 720px; background: #1a1a1a; border-radius: 40px;
@@ -30,89 +28,49 @@
     }
 
     /* ANIMATSIYALAR */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fillProgress { from { width: 0; } to { width: var(--final-width); } }
 
-    @keyframes fillProgress {
-      from { width: 0; }
-      to { width: var(--final-width); }
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    /* HEADER */
-    .header {
-      padding: 45px 15px 15px; background: #fff; border-bottom: 1px solid #eee;
-      display: flex; align-items: center; justify-content: space-between;
-    }
+    .header { padding: 45px 15px 15px; background: #fff; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; }
     .header-title { font-size: 17px; font-weight: 700; color: #1a1a1a; }
 
-    /* HISOBOT KARTALARI */
-    .content { flex: 1; overflow-y: auto; padding: 15px 15px 100px; }
+    .content { flex: 1; overflow-y: auto; padding: 15px 15px 100px; scrollbar-width: none; }
+    .content::-webkit-scrollbar { display: none; }
     
-    .report-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;
-    }
+    .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
     
     .report-card {
       background: #fff; padding: 15px; border-radius: 20px; border: 1px solid #eee;
-      text-align: center;
-      animation: fadeInUp 0.5s ease forwards;
-      opacity: 0; /* Boshida ko'rinmaydi */
+      animation: fadeInUp 0.5s ease forwards; opacity: 0;
     }
+    .report-card i { font-size: 18px; margin-bottom: 8px; display: block; }
+    .report-card span { font-size: 11px; color: #888; display: block; }
+    .report-card strong { font-size: 14px; color: #333; margin-top: 4px; display: block; }
 
-    /* Har bir karta kechikish bilan chiqadi */
-    .report-card:nth-child(1) { animation-delay: 0.1s; }
-    .report-card:nth-child(2) { animation-delay: 0.2s; }
-    .report-card:nth-child(3) { animation-delay: 0.3s; }
-    .report-card:nth-child(4) { animation-delay: 0.4s; }
-
-    .report-card i { font-size: 20px; margin-bottom: 8px; display: block; }
-    .report-card strong { font-size: 15px; color: #333; margin-top: 4px; display: block; }
-
-    /* ANALITIKA BLOKI */
+    /* KATEGORIYA ANALITIKASI */
     .chart-container {
       background: #fff; border-radius: 24px; padding: 20px; margin-bottom: 15px;
-      border: 1px solid #eee;
-      animation: fadeInUp 0.6s ease forwards;
-      animation-delay: 0.5s;
-      opacity: 0;
+      border: 1px solid #eee; animation: fadeInUp 0.6s ease forwards; opacity: 0;
     }
+    .chart-title { font-size: 13px; font-weight: 700; color: #333; margin-bottom: 15px; }
 
-    /* PROGRESS BARS */
-    .progress-item { margin-bottom: 15px; }
-    .progress-label { display: flex; justify-content: space-between; font-size: 11px; color: #666; margin-bottom: 5px; }
-    .progress-bar { width: 100%; height: 8px; background: #f0f0f0; border-radius: 4px; overflow: hidden; }
-    
-    .progress-fill { 
-      height: 100%; border-radius: 4px; 
-      animation: fillProgress 1.5s cubic-bezier(0.1, 0.5, 0.5, 1) forwards;
-      animation-delay: 0.8s;
-      width: 0; /* Animatsiyadan oldin */
-    }
+    .progress-item { margin-bottom: 12px; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 11px; color: #666; margin-bottom: 4px; }
+    .progress-bar { width: 100%; height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 3px; animation: fillProgress 1.2s ease-out forwards; width: 0; }
 
-    /* MAQSAD BLOKI (Oylik maqsad) */
+    /* MAQSAD KARTASI */
     .target-card {
-      background: #6366f1; color: #fff; border-radius: 24px; padding: 20px;
-      animation: fadeInUp 0.6s ease forwards;
-      animation-delay: 0.7s;
-      opacity: 0;
+      background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+      color: #fff; border-radius: 24px; padding: 20px;
+      animation: fadeInUp 0.6s ease forwards; opacity: 0;
     }
 
     /* NAVBAR */
-    .navbar { position: absolute; bottom: 0; width: 100%; height: 75px; background: #fff; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; padding-bottom: 10px; }
-    .nav-item { text-decoration: none; color: #a0a0a0; text-align: center; font-size: 10px; font-weight: 600; transition: 0.3s; }
-    .nav-item.active { color: #6366f1; transform: translateY(-5px); }
+    .navbar { position: absolute; bottom: 0; width: 100%; height: 75px; background: #fff; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; padding-bottom: 10px; z-index: 100; }
+    .nav-item { text-decoration: none; color: #a0a0a0; text-align: center; font-size: 10px; font-weight: 600; }
+    .nav-item.active { color: #6366f1; }
     .nav-item i { font-size: 18px; margin-bottom: 4px; display: block; }
-
-    /* FEEDBACK EFFECT */
-    .report-card:active { transform: scale(0.95); transition: 0.1s; }
   </style>
 </head>
 <body>
@@ -123,35 +81,35 @@
       
       <header class="header">
         <div class="header-title">Hisobotlar</div>
-        <i class="fa-solid fa-filter" style="color: #6366f1; cursor: pointer;"></i>
+        <i class="fa-solid fa-arrows-rotate" style="color: #6366f1; cursor: pointer;"></i>
       </header>
 
       <div class="content">
         <div class="report-grid">
-          <div class="report-card">
-            <i class="fa-solid fa-sack-dollar" style="color: #10b981;"></i>
-            <span>Sof foyda</span>
-            <strong style="color: #10b981;">+12.4 mln</strong>
+          <div class="report-card" style="animation-delay: 0.1s;">
+            <i class="fa-solid fa-wallet" style="color: #10b981;"></i>
+            <span>Jami daromad</span>
+            <strong style="color: #10b981;">{{ jami_daromat|intcomma }} so'm</strong>
           </div>
-          <div class="report-card">
-            <i class="fa-solid fa-box-open" style="color: #f59e0b;"></i>
+          <div class="report-card" style="animation-delay: 0.2s;">
+            <i class="fa-solid fa-bag-shopping" style="color: #f59e0b;"></i>
             <span>Sotuvlar</span>
-            <strong>154 ta</strong>
+            <strong>{{ savdo_soni }} ta</strong>
           </div>
-          <div class="report-card">
+          <div class="report-card" style="animation-delay: 0.3s;">
             <i class="fa-solid fa-user-plus" style="color: #6366f1;"></i>
-            <span>Yangi mijoz</span>
-            <strong>42 ta</strong>
+            <span>Yangi mijozlar</span>
+            <strong>{{ yangi_savdogarlik }} ta</strong>
           </div>
-          <div class="report-card">
-            <i class="fa-solid fa-arrow-trend-down" style="color: #ef4444;"></i>
-            <span>Voz kechilgan</span>
-            <strong style="color: #ef4444;">8 ta</strong>
+          <div class="report-card" style="animation-delay: 0.4s;">
+            <i class="fa-solid fa-circle-xmark" style="color: #ef4444;"></i>
+            <span>Bekor qilindi</span>
+            <strong style="color: #ef4444;">{{ bekor_qil_buy }} ta</strong>
           </div>
         </div>
 
-        <div class="chart-container">
-         
+        <div class="chart-container" style="animation-delay: 0.5s;">
+          <div class="chart-title">Kategoriyalar ulushi</div>
           
           <div class="progress-item">
             <div class="progress-label"><span>Elektronika</span> <span>65%</span></div>
@@ -168,27 +126,31 @@
           </div>
 
           <div class="progress-item">
-            <div class="progress-label"><span>Xizmatlar</span> <span>10%</span></div>
+            <div class="progress-label"><span>Maishiy texnika</span> <span>10%</span></div>
             <div class="progress-bar">
               <div class="progress-fill" style="--final-width: 10%; background: #f59e0b;"></div>
             </div>
           </div>
         </div>
 
-        <div class="target-card">
-          <h3 style="color: #fff; font-size: 14px; margin-bottom: 10px;">Oylik maqsad</h3>
-          <p style="font-size: 11px; opacity: 0.8; margin-bottom: 15px;">Siz oylik rejaning 80% qismini bajardingiz!</p>
-          <div class="progress-bar" style="background: rgba(255,255,255,0.2);">
-            <div class="progress-fill" style="--final-width: 80%; background: #fff;"></div>
+        <div class="target-card" style="animation-delay: 0.6s;">
+          <h3 style="font-size: 14px; margin-bottom: 8px;">Oylik maqsad</h3>
+          <p style="font-size: 11px; opacity: 0.8; margin-bottom: 12px;">Siz oylik rejaning 75% qismini bajardingiz.</p>
+          <div class="progress-bar" style="background: rgba(255,255,255,0.2); height: 10px;">
+            <div class="progress-fill" style="--final-width: 75%; background: #fff;"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 10px;">
+            <span>75% (75 mln)</span>
+            <span>Maqsad: 100 mln</span>
           </div>
         </div>
       </div>
 
       <nav class="navbar">
-        <a href="{% url 'buyurtma_admin' %}" class="nav-item"><i class="fa-solid fa-cart-flatbed-suitcase"></i><span>Buyurtma</span></a>
+        <a href="{% url 'buyurtma_admin' %}" class="nav-item active"><i class="fa-solid fa-cart-flatbed-suitcase"></i><span>Buyurtma</span></a>
         <a href="{% url 'mijozlar' %}" class="nav-item"><i class="fa-solid fa-users-gear"></i><span>Mijozlar</span></a>
         <a href="{% url 'kassa' %}" class="nav-item"><i class="fa-solid fa-wallet"></i><span>Kassa</span></a>
-        <a href="{% url 'hisobothtml' %}" class="nav-item active"><i class="fa-solid fa-chart-pie"></i><span>Hisobot</span></a>
+        <a href="{% url 'hisobothtml' %}" class="nav-item"><i class="fa-solid fa-chart-pie"></i><span>Hisobot</span></a>
       </nav>
 
     </div>

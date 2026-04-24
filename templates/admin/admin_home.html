@@ -1,166 +1,93 @@
+{% load humanize %}
+
 <!DOCTYPE html>
 <html lang="uz">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Home UZS - Animated</title>
+  <title>Admin Dashboard Pro</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background: #e5e5e5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
+    body { background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
 
     /* PHONE FRAME */
     .phone {
-      width: 360px;
-      height: 720px;
-      background: #000;
-      border-radius: 40px;
-      padding: 12px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-      position: relative;
-      border: 4px solid #333;
+      width: 360px; height: 720px; background: #1a1a1a; border-radius: 40px;
+      padding: 10px; box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+      position: relative; border: 4px solid #333;
     }
 
-    /* SCREEN */
     .screen {
-      width: 100%;
-      height: 100%;
-      background: #f8f9fa;
-      border-radius: 28px;
-      overflow-y: auto; 
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      scrollbar-width: none;
+      width: 100%; height: 100%; background: #f8f9fa; border-radius: 32px;
+      overflow-y: auto; position: relative; scrollbar-width: none;
     }
-
     .screen::-webkit-scrollbar { display: none; }
 
     .notch {
-      width: 60px; height: 20px; background: #000;
-      position: absolute; top: 0; left: 50%;
-      transform: translateX(-50%);
-      border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;
-      z-index: 110;
+      width: 60px; height: 18px; background: #1a1a1a; position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%); border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; z-index: 110;
     }
 
-    .admin-container { padding: 45px 20px 20px; }
-    .admin-header { margin-bottom: 25px; }
-    .admin-header h1 { font-size: 24px; color: #1a1a1a; font-weight: 700; }
-    .admin-header p { font-size: 14px; color: #6c757d; }
+    .admin-container { padding: 40px 16px 100px; }
+    .admin-header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .admin-header h1 { font-size: 20px; color: #1a1a1a; font-weight: 800; }
+    .admin-header .profile-icon { width: 35px; height: 35px; background: #6366f1; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
 
-    /* STATISTIKA BLOCK ANIMATSIYA */
-    .section-title {
-      font-size: 16px;
-      font-weight: 700;
-      margin: 20px 0 12px;
-      color: #333;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    /* KASSA KARTASI */
+    .balance-card {
+      background: linear-gradient(135deg, #065f46 0%, #064e3b 100%);
+      padding: 20px; border-radius: 24px; color: #fff; margin-bottom: 20px;
+      box-shadow: 0 10px 20px rgba(6, 95, 70, 0.2);
     }
+    .balance-card span { font-size: 12px; opacity: 0.8; }
+    .balance-card h2 { font-size: 22px; font-weight: 800; margin-top: 5px; }
 
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .stats-grid a { text-decoration: none; color: inherit; }
-
+    /* STATISTIKA GRID */
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
+    
+    .stat-link { text-decoration: none; display: block; -webkit-tap-highlight-color: transparent; }
+    
     .stat-box {
-      background: #fff;
-      padding: 15px;
-      border-radius: 12px;
-      border: 1px solid #eee;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-      /* Kirib kelish animatsiyasi */
-      animation: slideUp 0.5s ease forwards;
-      opacity: 0;
+      background: #fff; padding: 16px; border-radius: 18px; border: 1px solid rgba(0,0,0,0.03);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: 0.2s; position: relative;
     }
+    .stat-link:active .stat-box { transform: scale(0.95); background: #f9f9f9; }
 
-    @keyframes slideUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+    .stat-box .label { font-size: 10px; color: #888; font-weight: 600; text-transform: uppercase; margin-bottom: 8px; display: block; }
+    .stat-box i { float: right; color: #6366f1; opacity: 0.5; font-size: 14px; }
+
+    /* SHIMMER ANIMATSIYA (SONLAR O'RNIGA) */
+    .skeleton-line {
+      height: 12px; width: 60%; background: #f1f3f5; border-radius: 4px;
+      position: relative; overflow: hidden; pointer-events: none;
     }
-
-    .stat-box .label {
-      font-size: 10px;
-      color: #888;
-      text-transform: uppercase;
-      display: block;
-      margin-bottom: 5px;
+    .skeleton-line::after {
+      content: ""; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+      animation: shimmer 1.5s infinite;
     }
-
-    .stat-box .value { font-size: 16px; font-weight: 700; color: #1a1a1a; }
-    .stat-box .currency { font-size: 10px; color: #6366f1; margin-left: 2px; }
-
-    /* SKLAD RO'YXATI */
-    .stock-list { display: flex; flex-direction: column; gap: 10px; }
-    .stock-item {
-      background: #fff;
-      border: 1px solid #eee;
-      padding: 12px;
-      border-radius: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      animation: fadeIn 0.8s ease forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .stock-info h4 { font-size: 13px; color: #333; }
-    .stock-info p { font-size: 11px; color: #999; }
-    .stock-count {
-      background: #fee2e2;
-      color: #ef4444;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 8px;
-    }
+    @keyframes shimmer { 100% { left: 100%; } }
 
     /* TUGMALAR */
-    .button-group { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-    .button-group a { text-decoration: none; }
-
-    .admin-btn {
-      width: 100%;
-      padding: 15px;
-      background: #6366f1;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      cursor: pointer;
-      transition: 0.3s;
+    .section-title { font-size: 14px; font-weight: 700; color: #333; margin: 20px 0 12px; }
+    .quick-actions { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    
+    .action-btn {
+      width: 100%; padding: 14px; border-radius: 16px; border: none; font-size: 14px;
+      font-weight: 600; display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; transition: 0.3s; text-decoration: none;
     }
 
-    .admin-btn:active { transform: scale(0.98); }
-    .admin-btn.secondary { background: #fff; color: #6366f1; border: 1px solid #6366f1; }
-    .admin-btn.danger { background: #fff; color: #ef4444; border: 1px solid #ef4444; }
+    .btn-primary { background: #6366f1; color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
+    .btn-telegram { background: #0088cc; color: white; }
+    .btn-white { background: white; color: #1a1a1a; border: 1px solid #eee; }
+    .btn-danger { background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; }
+
+    /* ANIMATSIYA */
+    [style*="--delay"] { animation: slideIn 0.5s ease forwards; animation-delay: calc(var(--delay) * 0.1s); opacity: 0; }
+    @keyframes slideIn { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   </style>
 </head>
 <body>
@@ -170,93 +97,78 @@
     <div class="screen">
       <div class="admin-container">
         
-        <div class="admin-header">
-          <h1>Admin Paneli</h1>
-          <p>Xush kelibsiz, tizim nazorati</p>
+        <header class="admin-header">
+          <div>
+            <p style="font-size: 12px; color: #666;">Salom, Admin</p>
+            <h1>Boshqaruv</h1>
+          </div>
+          <div class="profile-icon"><i class="fa-solid fa-user-tie"></i></div>
+        </header>
+
+        <div class="balance-card" style="--delay: 1">
+          <span>Jami qoldiq (Kassa)</span>
+          <h2>{{ total_balance|default:"0"|intcomma }} so'm</h2>
         </div>
 
-        <div class="section-title">
-          Statistika <i class="fa-solid fa-chart-line" style="font-size: 14px; color: #6366f1;"></i>
-        </div>
+        <div class="section-title">Statistika</div>
         
         <div class="stats-grid">
-          <a href="#">
-            <div class="stat-box" style="animation-delay: 0.1s;">
-              <span class="label">Umumiy Savdo</span>
-              <span class="value"><span class="counter" data-target="24500000">0</span><span class="currency">UZS</span></span>
+          <a href="{% url 'hisobothtml' %}" class="stat-link" style="--delay: 2">
+            <div class="stat-box">
+              <i class="fa-solid fa-bag-shopping"></i>
+              <span class="label">Savdo</span>
+              <div class="skeleton-line"></div>
             </div>
           </a>
-          <a href="#">
-            <div class="stat-box" style="animation-delay: 0.2s;">
-              <span class="label">Sof Foyda</span>
-              <span class="value"><span class="counter" data-target="8200000">0</span><span class="currency">UZS</span></span>
+          <a href="{% url 'hisobothtml' %}" class="stat-link" style="--delay: 3">
+            <div class="stat-box">
+              <i class="fa-solid fa-coins"></i>
+              <span class="label">Foyda</span>
+              <div class="skeleton-line"></div>
             </div>
           </a>
-          <a href="{% url 'buyurtma_admin' %}">
-            <div class="stat-box" style="animation-delay: 0.3s;">
-              <span class="label">Buyurtmalar</span>
-              <span class="value"><span class="counter" data-target="412">0</span> <small>ta</small></span>
+          <a href="{% url 'buyurtma_admin' %}" class="stat-link" style="--delay: 4">
+            <div class="stat-box">
+              <i class="fa-solid fa-cart-flatbed"></i>
+              <span class="label">Buyurtma</span>
+              <div class="skeleton-line"></div>
             </div>
           </a>
-          <a href="{% url 'mijozlar' %}">
-            <div class="stat-box" style="animation-delay: 0.4s;">
+          <a href="{% url 'mijozlar' %}" class="stat-link" style="--delay: 5">
+            <div class="stat-box">
+              <i class="fa-solid fa-users"></i>
               <span class="label">Mijozlar</span>
-              <span class="value"><span class="counter" data-target="1840">0</span> <small>ta</small></span>
+              <div class="skeleton-line"></div>
             </div>
           </a>
-        </div>
-
-        <div class="section-title">Tugayotgan tovarlar</div>
-        <div class="stock-list">
-          <div class="stock-item">
-            <div class="stock-info">
-              <h4>iPhone 15 Pro Max</h4>
-              <p>Kategoriya: Smartfonlar</p>
-            </div>
-            <div class="stock-count">2 ta qoldi</div>
-          </div>
-          <div class="stock-item">
-            <div class="stock-info">
-              <h4>AirPods Pro 2</h4>
-              <p>Kategoriya: Aksessuarlar</p>
-            </div>
-            <div class="stock-count">5 ta qoldi</div>
-          </div>
         </div>
 
         <div class="section-title">Tezkor amallar</div>
-        <div class="button-group">
-          <a href="{% url 'buyurtma_admin' %}"><button class="admin-btn"><i class="fa-solid fa-list-check"></i> Buyurtmalar</button></a>
-          <a href="{% url 'logout_html' %}"><button class="admin-btn danger"><i class="fa-solid fa-power-off"></i> Chiqish</button></a>
+        <div class="quick-actions">
+          
+          <a href="{% url 'buyurtma_admin' %}" class="action-btn btn-primary" style="--delay: 6">
+            <span><i class="fa-solid fa-plus-circle"></i>Buyurtmani ko'rish</span>
+            <i class="fa-solid fa-chevron-right"></i>
+          </a>
+
+          <a href="https://t.me/market_playesbot" target="_blank" class="action-btn btn-telegram" style="--delay: 7">
+            <span><i class="fa-brands fa-telegram"></i> Botdan mahsulot qo'shish</span>
+            <i class="fa-solid fa-external-link-alt"></i>
+          </a>
+          
+          <a href="{% url 'kassa' %}" class="action-btn btn-white" style="--delay: 8">
+            <span><i class="fa-solid fa-wallet"></i> Kassa hisoboti</span>
+            <i class="fa-solid fa-chevron-right"></i>
+          </a>
+
+          <a href="{% url 'logout_html' %}" class="action-btn btn-danger" style="--delay: 9">
+            <span><i class="fa-solid fa-arrow-right-from-bracket"></i> Tizimdan chiqish</span>
+          </a>
         </div>
 
       </div>
     </div>
   </div>
-
-  <script>
-    // Raqamlarni sanash animatsiyasi (Counter Animation)
-    const counters = document.querySelectorAll('.counter');
-    const speed = 50; // Tezlik (qancha kichik bo'lsa shuncha tez)
-
-    counters.forEach(counter => {
-      const animate = () => {
-        const target = +counter.getAttribute('data-target');
-        const count = +counter.innerText.replace(/,/g, '');
-        const increment = target / speed;
-
-        if (count < target) {
-          const nextValue = Math.ceil(count + increment);
-          // Raqamlarni formatlash (masalan: 24,500,000)
-          counter.innerText = nextValue.toLocaleString();
-          setTimeout(animate, 20);
-        } else {
-          counter.innerText = target.toLocaleString();
-        }
-      };
-      animate();
-    });
-  </script>
 
 </body>
 </html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manzil qo'shish</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
+    body{background:#f2f2f2;display:flex;justify-content:center;align-items:center;height:100vh}
+    .box{width:360px;background:#fff;border-radius:20px;padding:20px}
+    h2{margin-bottom:15px}
+    input,textarea{
+      width:100%;padding:12px;margin-bottom:10px;
+      border-radius:10px;border:1px solid #ddd;outline:none
+    }
+    button{
+      width:100%;padding:14px;background:#7f4df2;
+      color:#fff;border:none;border-radius:12px;font-weight:bold
+    }
+    .status{
+      background:#f3f0ff;padding:10px;border-radius:10px;
+      text-align:center;margin-bottom:10px;color:#7f4df2
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Manzil qo‘shish</h2>
+
+  <div class="status" id="status">
+    <i class="fa-solid fa-circle-notch fa-spin"></i>
+    Aniqlanmoqda...
+  </div>
+
+  <input type="text" id="title" placeholder="Uy, Ish..." />
+  <textarea id="address" placeholder="Manzil..."></textarea>
+
+  <input type="text" placeholder="Podyezd"/>
+  <input type="text" placeholder="Qavat"/>
+  <input type="text" placeholder="Kod"/>
+
+  <button onclick="getLocation()">Joylashuvni aniqlash</button>
+</div>
+
+<script>
+function setStatus(text, color="purple", icon="fa-circle-notch fa-spin"){
+  const box = document.getElementById("status");
+  box.innerHTML = `<i class="fa-solid ${icon}"></i> ${text}`;
+  box.style.color = color;
+}
+
+// BUTTON BOSILGANDA ISHLAYDI
+function getLocation(){
+
+  if(!navigator.geolocation){
+    setStatus("Geolokatsiya ishlamaydi","red","fa-triangle-exclamation");
+    return;
+  }
+
+  setStatus("Joylashuv olinmoqda...");
+
+  navigator.geolocation.getCurrentPosition(async (pos)=>{
+
+    const lat = pos.coords.latitude;
+    const lon = pos.coords.longitude;
+
+    try{
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`
+      );
+      const data = await res.json();
+
+      if(data){
+
+        // 🔥 INPUTLARGA YOZISH
+        document.getElementById("address").value = data.display_name || "";
+
+        const city =
+          data.address.city ||
+          data.address.town ||
+          data.address.village ||
+          "Mening manzilim";
+
+        document.getElementById("title").value = city;
+
+        setStatus("Topildi ✅","green","fa-check");
+
+      }
+
+    }catch(e){
+      document.getElementById("address").value = `${lat}, ${lon}`;
+      setStatus("Manzil topilmadi","orange","fa-triangle-exclamation");
+    }
+
+  },()=>{
+    setStatus("Ruxsat berilmadi ❌","red","fa-xmark");
+  });
+}
+</script>
+
+</body>
+</html>
