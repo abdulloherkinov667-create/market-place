@@ -209,3 +209,20 @@ class SupportMessage(BaseCreatedModel):
 
     def __str__(self):
         return f"Message from {self.user.username} at {self.created_at}"
+    
+    
+#manzil modeli 
+from django.db import models
+
+class Address(models.Model):
+    landmark = models.CharField(max_length=255, verbose_name="Mo'ljal (Qayerga yaqin?)")
+    full_address = models.CharField( max_length=500, verbose_name="To'liq manzil")
+    extra_info = models.CharField(max_length=255, blank=True, null=True, verbose_name="Qo'shimcha izoh")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.landmark} | {self.full_address[:30]}"
+
+    class Meta:
+        verbose_name = "Manzil"
+        verbose_name_plural = "Manzillar"

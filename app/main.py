@@ -27,7 +27,7 @@ from app.models import (
     ShopingModel, Order, OrderItem
 )
 
-TOKEN = "8664343682:AAH4lSmtxkGCmZTUJhCrjk6T4anOrWUrj8c"
+TOKEN = "8664343682:AAF70Wq0TM6h7jSvRnDdu8HIHG0evnMHQOs"
 ADMIN_IDS = [6411347321]
 
 bot = Bot(token=TOKEN)

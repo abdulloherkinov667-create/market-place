@@ -2,105 +2,88 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Manzil qo'shish</title>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manzil kiritish</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
-    body{background:#f2f2f2;display:flex;justify-content:center;align-items:center;height:100vh}
-    .box{width:360px;background:#fff;border-radius:20px;padding:20px}
-    h2{margin-bottom:15px}
-    input,textarea{
-      width:100%;padding:12px;margin-bottom:10px;
-      border-radius:10px;border:1px solid #ddd;outline:none
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body { background: #e5e5e5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+
+    .phone {
+      width: 360px; height: 720px; background: #000; border-radius: 40px;
+      padding: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      position: relative; border: 4px solid #333;
     }
-    button{
-      width:100%;padding:14px;background:#7f4df2;
-      color:#fff;border:none;border-radius:12px;font-weight:bold
+
+    .screen {
+      width: 100%; height: 100%; background: #ffffff;
+      border-radius: 28px; overflow: hidden; display: flex; flex-direction: column;
     }
-    .status{
-      background:#f3f0ff;padding:10px;border-radius:10px;
-      text-align:center;margin-bottom:10px;color:#7f4df2
+
+    .notch {
+      width: 60px; height: 20px; background: #000; position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 110;
+    }
+
+    .header { padding: 45px 20px 15px; display: flex; align-items: center; gap: 15px; }
+    .back-btn {
+      width: 40px; height: 40px; background: #f1f1f2; border-radius: 12px;
+      display: flex; justify-content: center; align-items: center;
+      text-decoration: none; color: #333;
+    }
+
+    .content { flex: 1; padding: 20px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; color: #8e8e93; margin-bottom: 8px; font-weight: 500; }
+    .form-group input {
+      width: 100%; padding: 16px; background: #f1f1f2; border: 1px solid #f1f1f2;
+      border-radius: 12px; outline: none; font-size: 15px;
+    }
+    .form-group input:focus { border-color: #6366f1; background: #fff; }
+
+    .submit-btn {
+      background: #6366f1; color: white; border: none; padding: 18px;
+      border-radius: 15px; width: 100%; font-size: 16px; font-weight: 600;
+      margin-top: 10px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-<div class="box">
-  <h2>Manzil qo‘shish</h2>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      
+      <div class="header">
+        <a href="#" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
+        <h3 style="font-size: 18px; color: #1a1a1a;">Manzil ma'lumotlari</h3>
+      </div>
 
-  <div class="status" id="status">
-    <i class="fa-solid fa-circle-notch fa-spin"></i>
-    Aniqlanmoqda...
+      <div class="content">
+        <form action="#" method="POST">
+          <div class="form-group">
+            <label>Mo'ljal (Qayerga yaqin?)</label>
+            <input type="text" name="landmark" placeholder="Masalan: Masjid yonida, maktab orqasida" required>
+          </div>
+
+          <div class="form-group">
+            <label>To'liq manzil (Mahalla, ko'cha va uy raqami)</label>
+            <input type="text" name="full_address" placeholder="Masalan: Paxtakor MFY, Olmazor ko'chasi, 12-uy" required>
+          </div>
+
+          <div class="form-group">
+            <label>Qo'shimcha izoh (Ixtiyoriy)</label>
+            <input type="text" name="extra_info" placeholder="Masalan: Darvozasi yashil rangli">
+          </div>
+
+          <button type="submit" class="submit-btn">Saqlash</button>
+        </form>
+      </div>
+
+    </div>
   </div>
-
-  <input type="text" id="title" placeholder="Uy, Ish..." />
-  <textarea id="address" placeholder="Manzil..."></textarea>
-
-  <input type="text" placeholder="Podyezd"/>
-  <input type="text" placeholder="Qavat"/>
-  <input type="text" placeholder="Kod"/>
-
-  <button onclick="getLocation()">Joylashuvni aniqlash</button>
-</div>
-
-<script>
-function setStatus(text, color="purple", icon="fa-circle-notch fa-spin"){
-  const box = document.getElementById("status");
-  box.innerHTML = `<i class="fa-solid ${icon}"></i> ${text}`;
-  box.style.color = color;
-}
-
-// BUTTON BOSILGANDA ISHLAYDI
-function getLocation(){
-
-  if(!navigator.geolocation){
-    setStatus("Geolokatsiya ishlamaydi","red","fa-triangle-exclamation");
-    return;
-  }
-
-  setStatus("Joylashuv olinmoqda...");
-
-  navigator.geolocation.getCurrentPosition(async (pos)=>{
-
-    const lat = pos.coords.latitude;
-    const lon = pos.coords.longitude;
-
-    try{
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`
-      );
-      const data = await res.json();
-
-      if(data){
-
-        // 🔥 INPUTLARGA YOZISH
-        document.getElementById("address").value = data.display_name || "";
-
-        const city =
-          data.address.city ||
-          data.address.town ||
-          data.address.village ||
-          "Mening manzilim";
-
-        document.getElementById("title").value = city;
-
-        setStatus("Topildi ✅","green","fa-check");
-
-      }
-
-    }catch(e){
-      document.getElementById("address").value = `${lat}, ${lon}`;
-      setStatus("Manzil topilmadi","orange","fa-triangle-exclamation");
-    }
-
-  },()=>{
-    setStatus("Ruxsat berilmadi ❌","red","fa-xmark");
-  });
-}
-</script>
 
 </body>
 </html>
