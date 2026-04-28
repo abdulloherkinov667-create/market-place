@@ -1,254 +1,225 @@
 {% extends 'base.html' %}
+
 {% block main %}
+
 {% load humanize %}
 
-<div id="splash-screen">
-    <div class="logo-animation">
-        <span class="letter">M</span>
-        <span class="letter">a</span>
-        <span class="letter">r</span>
-        <span class="letter">k</span>
-        <span class="letter">e</span>
-        <span class="letter">t</span>
-        <span class="letter">&nbsp;</span>
-        <span class="letter">P</span>
-        <span class="letter">l</span>
-        <span class="letter">a</span>
-        <span class="letter">c</span>
-        <span class="letter">e</span>
-    </div>
-</div>
 
-<div class="main-content" id="main-content" style="opacity: 0; transform: translateY(20px); transition: all 0.8s ease;">
-  <div class="promo-slider">
-    <div class="promo-wrapper" id="sliderWrapper">
-      <div class="promo-slide active">
-        <div class="promo-content">
-          <div class="promo-text-side">
-            <h2 class="promo-title">В рассрочку<br>без переплат</h2>
-            <div class="promo-badge-container">
-              <div class="promo-price-badge">116 333 <span>sum</span></div>
-              <div class="promo-term-badge">x 3 мес</div>
-            </div>
-            <p class="promo-subtext">Мужские кроссовки SADO</p>
-          </div>
-          <div class="promo-image-side">
-            <div class="promo-yellow-bg">
-              <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400" alt="Shoes">
-            </div>
-          </div>
+
+<div class="main-content">
+
+  <div class="slider-container">
+
+    <div class="slider-wrapper" id="sliderWrapper">
+
+      <div class="slide">
+
+        <div class="slide-img" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500');">
+
+          <div class="slide-content"><h2>TERRA PRO</h2></div>
+
         </div>
+
       </div>
-      <div class="promo-slide">
-        <div class="promo-content" style="background: #00c2cb;">
-          <div class="promo-text-side">
-            <h2 class="promo-title">Yangi mavsum<br>chegirmalari</h2>
-            <p class="promo-subtext">Barcha kiyimlar uchun -30%</p>
-          </div>
-          <div class="promo-image-side">
-             <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400" style="width: 100%; border-radius: 10px;">
-          </div>
-        </div>
-      </div>
-      <div class="promo-slide">
-        <div class="promo-content" style="background: #ff4d4d;">
-          <div class="promo-text-side">
-             <h2 class="promo-title">TERRA PRO<br>Collection</h2>
-          </div>
-          <div class="promo-image-side">
-             <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400" style="width: 100%; border-radius: 10px;">
-          </div>
-        </div>
-      </div>
-      <div class="promo-slide">
-        <div class="promo-content" style="background: #7f4df2;">
-          <div class="promo-text-side">
-             <h2 class="promo-title">Smart Watch<br>Maxsus narx</h2>
-          </div>
-          <div class="promo-image-side">
-             <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400" style="width: 100%; border-radius: 10px;">
-          </div>
-        </div>
-      </div>
+
     </div>
-    <div class="promo-dots">
-      <span class="p-dot active"></span>
-      <span class="p-dot"></span>
-      <span class="p-dot"></span>
-      <span class="p-dot"></span>
+
+    <div class="dots">
+
+      <div class="dot active"></div>
+
+      <div class="dot"></div>
+
+      <div class="dot"></div>
+
     </div>
+
   </div>
+
+
 
   <h3 style="padding: 0 15px; margin-bottom: 12px; font-size: 18px">Siz uchun tavsiyalar</h3>
 
+
+
   <div class="product-grid">
+
     {% for i in page_obj %}
+
     <div class="product-card" style="position: relative;">
+
+     
+
       <form action="{% url 'istak_like_bos' %}" method="POST" style="position:absolute; top:10px; right:10px; z-index:2;">
+
         {% csrf_token %}
+
         <input type="hidden" name="product_id" value="{{ i.id }}">
+
+       
+
         <button type="submit" style="background:none; border:none; padding:0;">
-          <i class="fa-heart wish-icon {% if i.id in liked_product_ids %}fa-solid active{% else %}fa-regular{% endif %}"></i>
+
+          <i class="fa-heart wish-icon
+
+            {% if i.id in liked_product_ids %}
+
+              fa-solid active
+
+            {% else %}
+
+              fa-regular
+
+            {% endif %}
+
+          "></i>
+
         </button>
+
       </form>
 
+
+
+      <!-- PRODUCT -->
+
       <a href="{% url 'product_details' i.slug %}" style="text-decoration: none; color: inherit; display: block;">
+
         {% if i.images.all %}
+
           <img class="product-img" src="{{ i.images.all.0.image.url }}" alt="{{ i.name }}" />
+
         {% endif %}
+
         <div class="product-info">
+
           <p class="product-title">{{ i.name |capfirst }}</p>
+
           <div class="price-container">
+
             <span class="price-now">{{ i.price|intcomma }} so'm</span>
+
           </div>
+
         </div>
+
       </a>
 
+
+
+      <!-- CART -->
+
       <div style="padding: 0 8px 8px 8px;">
+
         <form action="{% url 'shoping_cart_create' %}" method="POST">
+
           {% csrf_token %}
+
           <input type="hidden" name="uzumproduct" value="{{ i.id }}">
+
           <input type="hidden" name="user" value="{{ request.user.id }}">
+
           <button type="submit" class="add-cart-btn">
+
             <i class="fa-solid fa-cart-plus"></i>
+
             <span>Savatga</span>
+
           </button>
+
         </form>
+
       </div>
+
+
+
     </div>
+
     {% endfor %}
+
   </div>
+
 </div>
 
+
+
 <style>
-  /* 1. ANIMATSIYA STILI */
-  #splash-screen {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: #fff;
-    display: flex; justify-content: center; align-items: center;
-    z-index: 9999;
-    transition: opacity 0.5s ease;
-  }
 
-  .logo-animation {
-    font-family: 'Arial', sans-serif;
-    font-size: 32px;
-    font-weight: 900;
-    color: #4a1eff;
-  }
+  .wish-icon {
 
-  .letter {
-    display: inline-block;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 0.4s forwards;
-  }
+    font-size: 20px;
 
-  /* Har bir harf uchun kechikish (Delay) */
-  .letter:nth-child(1) { animation-delay: 0.1s; }
-  .letter:nth-child(2) { animation-delay: 0.2s; }
-  .letter:nth-child(3) { animation-delay: 0.3s; }
-  .letter:nth-child(4) { animation-delay: 0.4s; }
-  .letter:nth-child(5) { animation-delay: 0.5s; }
-  .letter:nth-child(6) { animation-delay: 0.6s; }
-  .letter:nth-child(7) { animation-delay: 0.7s; }
-  .letter:nth-child(8) { animation-delay: 0.8s; }
-  .letter:nth-child(9) { animation-delay: 0.9s; }
-  .letter:nth-child(10) { animation-delay: 1.0s; }
-  .letter:nth-child(11) { animation-delay: 1.1s; }
-  .letter:nth-child(12) { animation-delay: 1.2s; }
+    cursor: pointer;
 
-  @keyframes fadeInUp {
-    to { opacity: 1; transform: translateY(0); }
-  }
+    transition: transform 0.2s ease, color 0.2s ease;
 
-  /* 2. SLIDER STILI */
-  .promo-slider {
-    position: relative;
-    margin: 10px;
-    border-radius: 12px;
-    height: 180px;
-    overflow: hidden;
-  }
+    color: #555;
 
-  .promo-wrapper { width: 100%; height: 100%; position: relative; }
-
-  .promo-slide {
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+
+    top: 10px;
+
+    right: 10px;
+
+  }
+
+
+
+  .wish-icon.active {
+
+    color: #ff4d4d !important;
+
+    transform: scale(1.2);
+
+  }
+
+
+
+  .add-cart-btn {
+
+    width: 100%;
+
+    height: 40px;
+
+    background: transparent;
+
+    border: 1px solid #7f4df2;
+
+    border-radius: 10px;
+
     display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    color: #7f4df2;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+
   }
 
-  .promo-slide.active { opacity: 1; z-index: 1; }
 
-  .promo-content {
-    background: #4a1eff;
-    width: 100%; height: 100%;
-    display: flex; align-items: center;
-    padding: 15px; box-sizing: border-box;
+
+  .add-cart-btn:active {
+
+    background: #7f4df2;
+
+    color: #fff;
+
+    transform: scale(0.96);
+
   }
 
-  .promo-text-side { flex: 1.2; z-index: 2; }
-  .promo-title { color: white; font-size: 18px; font-weight: 800; line-height: 1.2; margin: 0 0 10px 0; }
-  .promo-badge-container { display: flex; align-items: center; margin-bottom: 8px; }
-  .promo-price-badge { background: white; color: #ff9d2d; padding: 3px 8px; border-radius: 6px 0 0 6px; font-weight: 900; font-size: 15px; }
-  .promo-term-badge { background: #ff9d2d; color: white; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 13px; margin-left: -4px; }
-  .promo-subtext { color: rgba(255,255,255,0.9); font-size: 12px; margin: 0; }
-
-  .promo-image-side { flex: 1; display: flex; justify-content: flex-end; align-items: center; }
-  .promo-yellow-bg { background: #ffc42d; width: 110px; height: 90px; border-radius: 15px; display: flex; align-items: center; justify-content: center; transform: rotate(5deg); }
-  .promo-yellow-bg img { width: 110%; transform: rotate(-15deg); }
-
-  .promo-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 2; }
-  .p-dot { width: 6px; height: 6px; background: rgba(255,255,255,0.4); border-radius: 50%; }
-  .p-dot.active { background: white; width: 15px; border-radius: 4px; }
-
-  /* 3. MAHSULOTLAR STILI */
-  .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
-  .product-img { width: 100%; border-radius: 8px; }
-  .wish-icon { font-size: 20px; cursor: pointer; transition: 0.2s; color: #555; }
-  .wish-icon.active { color: #ff4d4d !important; transform: scale(1.2); }
-  .add-cart-btn { width: 100%; height: 40px; background: transparent; border: 1px solid #7f4df2; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; color: #7f4df2; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
-  .add-cart-btn:active { background: #7f4df2; color: #fff; transform: scale(0.96); }
 </style>
 
-<script>
-  // A. SPLASH SCREEN LOGIKASI
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      const splash = document.getElementById('splash-screen');
-      const mainContent = document.getElementById('main-content');
-      
-      splash.style.opacity = '0';
-      setTimeout(() => {
-        splash.style.display = 'none';
-        mainContent.style.opacity = '1';
-        mainContent.style.transform = 'translateY(0)';
-      }, 500);
-    }, 2000); // 2 soniya animatsiya davom etadi
-  });
 
-  // B. SLIDER LOGIKASI
-  const slides = document.querySelectorAll('.promo-slide');
-  const dots = document.querySelectorAll('.p-dot');
-  let currentSlide = 0;
-
-  function showSlide(index) {
-    slides.forEach(s => s.classList.remove('active'));
-    dots.forEach(d => d.classList.remove('active'));
-    slides[index].classList.add('active');
-    dots[index].classList.add('active');
-  }
-
-  function nextSlide() {
-    currentSlide = (currentSlide + 1) % slides.length;
-    showSlide(currentSlide);
-  }
-
-  setInterval(nextSlide, 3000);
-</script>
 
 {% endblock main %}

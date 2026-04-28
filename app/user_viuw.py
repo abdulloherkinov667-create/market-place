@@ -3,8 +3,9 @@ from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render, redirect, get_list_or_404
 from django.contrib import messages
 from django.db.models import Q
-from .models import UzumProduct, ShopingModel, Users, Order, OrderItem, Like, User_carts
+from .models import Address, UzumProduct, ShopingModel, Users, Order, OrderItem, Like, User_carts
 from django.core.paginator import Paginator
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import (
     ListView, TemplateView, DetailView
 )
@@ -38,6 +39,19 @@ def customers(request):
     return render(request, 'customers.html', {'users': users})
 
 
-#yangi manzil qoshish html uchun viuw
-def add_address(request):
+#yangi adress qoshish htmli bu
+@csrf_exempt 
+def address_create_view(request):
+    if request.method == 'POST':
+        landmark = request.POST.get('landmark')
+        full_address = request.POST.get('full_address')
+        extra_info = request.POST.get('extra_info')
+
+        Address.objects.create(
+            landmark=landmark,
+            full_address=full_address,
+            extra_info=extra_info
+        )
+        return redirect('home_page') 
+
     return render(request, 'userlar/add_address.html')

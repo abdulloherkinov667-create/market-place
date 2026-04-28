@@ -1,6 +1,6 @@
 from django.contrib import admin
 # admin.py ichida shunday yozing:
-from .models import Like, User_carts, UzumProduct, UzumProductImage, Kategoriy, ShopingModel, Users, Order, OrderItem
+from .models import Like, User_carts, UzumProduct, UzumProductImage, Kategoriy, ShopingModel, Users, Order, OrderItem, Address
 
 @admin.register(UzumProduct)
 class UzumProductAdmin(admin.ModelAdmin):
@@ -28,7 +28,7 @@ class UsersAdmin(admin.ModelAdmin):
     list_display = ['phone', 'username', 'user_type']
     
     
-@admin.register(Order)
+@admin.register(Order)  
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['payment_method', 'user', 'phone', 'created_at', 'address', 'is_status', "payment_method", 'user']
     
@@ -46,3 +46,8 @@ class LikeAdmin(admin.ModelAdmin):
 @admin.register(User_carts)
 class User_cartsAdmin(admin.ModelAdmin):
     list_display = ['karta_nomer', 'muddat', 'cvv']
+
+
+@admin.register(Address)
+class AddressAdmin(admin.ModelAdmin):
+    list_display = ['full_address', 'landmark', 'extra_info']

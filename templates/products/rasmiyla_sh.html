@@ -14,7 +14,7 @@
     
     /* MODAL */
     .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-    .modal-card { width: 88%; background: #fff; border-radius: 20px; padding: 20px; transform: scale(0.8); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .modal-card { width: 88%; background: #fff; border-radius: 20px; padding: 20px; transform: scale(0.8); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 80%; overflow-y: auto; }
     .modal-card.active { transform: scale(1); }
     .modal-item { background: #f8f9ff; border: 1.5px solid #edf0ff; border-radius: 16px; padding: 16px; margin-bottom: 12px; cursor: pointer; text-align: left; transition: 0.2s; }
     .modal-item:active { background: #f0f2ff; }
@@ -35,6 +35,8 @@
     .btn-submit { width: 100%; padding: 15px; background: #7f4df2; color: #fff; border: none; border-radius: 15px; font-weight: 700; margin-top: 10px; cursor: pointer; }
     .notch { width: 60px; height: 20px; background: #000; position: absolute; top: 0; left: 50%; transform: translateX(-50%); border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 110; }
     
+    .empty-link { display: block; text-align: center; padding: 12px; border: 2px dashed #7f4df2; border-radius: 12px; color: #7f4df2; text-decoration: none; font-weight: 600; margin-top: 10px; font-size: 13px; }
+
     /* Hidden Containers */
     #addressList, #cardList { display: none; }
   </style>
@@ -47,8 +49,7 @@
   <div class="modal-overlay" id="uModal">
     <div class="modal-card" id="uModalContent">
       <h4 id="uModalTitle" style="margin-bottom:20px; text-align:center; font-size: 18px;">Tanlang</h4>
-      <div id="uModalBody">
-        </div>
+      <div id="uModalBody"></div>
       <button onclick="closeUModal()" style="width:100%; margin-top:10px; border:none; background:none; color:#8b8e99; font-size:13px; font-weight: 500; cursor: pointer;">Yopish</button>
     </div>
   </div>
@@ -111,28 +112,35 @@
   </div>
 </div>
 
+<!-- ✅ FAQAT SHU QISM O‘ZGARDI -->
 <div id="addressList">
-  <div class="modal-item" onclick="fillAddr('Toshkent, Chilonzor 9, 12-uy')">
-    <p>Toshkent, Chilonzor 9</p>
-    <small>Uy manzili</small>
-  </div>
-  <div class="modal-item" onclick="fillAddr('Toshkent, Yunusobod, IT-Park')">
-    <p>Toshkent, Yunusobod</p>
-    <small>Ish manzili</small>
-  </div>
+  {% if addresses %}
+    {% for address in addresses %}
+      <div class="modal-item" 
+           data-full="{{ address.full_address|escapejs }}"
+           onclick="fillAddr(this)">
+        <p>{{ address.landmark }}</p>
+        <small>{{ address.full_address }}</small>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p style="text-align:center; padding:10px; color:#999; font-size:13px;">Saqlangan manzillar topilmadi</p>
+  {% endif %}
+  <a href="{% url 'add_address' %}" class="empty-link">+ Yangi manzil qo'shish</a>
 </div>
 
 <div id="cardList">
   {% if user_cards %}
     {% for card in user_cards %}
       <div class="modal-item" onclick="fillCard('{{ card.karta_nomer }}', '{{ card.muddat }}', '{{ card.cvv }}', '{{ card.cart_egasi.username }}')">
-        <p>{{ card.masked_number }}</p>
+        <p>{{ card.karta_nomer }}</p>
         <small>Muddati: {{ card.muddat }}</small>
       </div>
     {% endfor %}
   {% else %}
     <p style="text-align:center; padding:20px; color:#999;">Sizda saqlangan kartalar yo'q</p>
   {% endif %}
+  <a href="{% url 'kart_yarat' %}" class="empty-link">+ Yangi karta qo'shish</a>
 </div>
 
 <script>
@@ -157,9 +165,11 @@
     openUModal("Manzilni tanlang", html);
   }
 
-  function fillAddr(val) {
-    document.getElementById('uAddr').value = val;
-    closeUModal();
+  // ✅ FAQAT SHU FUNKSIYA O‘ZGARDI
+  function fillAddr(el) {
+  const val = el.getAttribute("data-full");
+  document.getElementById('uAddr').value = val;
+  closeUModal();
   }
 
   function setPay(type) {

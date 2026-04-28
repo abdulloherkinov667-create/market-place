@@ -212,8 +212,6 @@ class SupportMessage(BaseCreatedModel):
     
     
 #manzil modeli 
-from django.db import models
-
 class Address(models.Model):
     landmark = models.CharField(max_length=255, verbose_name="Mo'ljal (Qayerga yaqin?)")
     full_address = models.CharField( max_length=500, verbose_name="To'liq manzil")

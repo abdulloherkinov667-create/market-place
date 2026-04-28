@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render, redirect, get_list_or_404
 from django.contrib import messages
 from django.db.models import Q
-from .models import UzumProduct, ShopingModel, Users, Order, OrderItem, Like, User_carts
+from .models import Address, UzumProduct, ShopingModel, Users, Order, OrderItem, Like, User_carts
 from django.core.paginator import Paginator
 from django.views.generic import (
     ListView, TemplateView, DetailView
@@ -114,7 +114,6 @@ def rasmiylashtirish_prod(request):
         return redirect('Shoping_Cart_Html')
 
     new_order = Order.objects.create(user=request.user)
-    
     for item in cart_items:
         OrderItem.objects.create(
             order=new_order,
@@ -124,12 +123,13 @@ def rasmiylashtirish_prod(request):
         )
     
     cart_items.delete()
-    
     user_cards = User_carts.objects.filter(cart_egasi=request.user)
+    addresses = Address.objects.all().order_by('-created_at')
     
     return render(request, 'products/rasmiyla_sh.html', {
         "order": new_order,
-        "user_cards": user_cards
+        "user_cards": user_cards,
+        "addresses": addresses,
     })
 
 
@@ -249,7 +249,9 @@ def login_viuw(request):
 
 #yetkazib berish manzili html
 def yetkazib_berish_manzili(request):
-    return render(request, 'userlar/yetgazish_manzil.html')
+    # har qoshganini birinchiga qoyaman 
+    addresses = Address.objects.all().order_by('-created_at')
+    return render(request, 'userlar/yetgazish_manzil.html', {'addresses': addresses})
 
 
 #katalog html 
@@ -302,9 +304,6 @@ def istak_like_bos(request):
     
     
 #yangi karta chiqishi uchun html
-def yangi_karta(request):
-    return render(request, 'userlar/yngi_cart_qos.html')
-
 @login_required(login_url='login_viuw')
 def kart_yarat(request):
     if request.method == 'POST':
@@ -318,10 +317,10 @@ def kart_yarat(request):
             cart_egasi=request.user,
             muddat=muddat,
             cvv=cvv
-        )
-        banks_cart_new.save()
+        )        
         messages.success(request, "Yangi karta muvaffaqiyatli qo'shildi!")
         return redirect('profile')
+    return render(request, 'userlar/yngi_cart_qos.html')
     
     
 #xavsizlik html

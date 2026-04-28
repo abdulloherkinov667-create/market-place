@@ -8,12 +8,12 @@ from app.views import (
     ProductDetailsViuw, logout_html, user_logout, ShopingCartHtml,
     shoping_cart_create, tolov_usullari, delete_product_cart, delete_card, rasmiylashtirish_prod,
     rasmiylashtirish_prod, upgdate_rasmiylash, order_html, order_details, qollab_quvatlash,
-    yetkazib_berish_manzili, istaklar, istak_like_bos, catalog_html, yangi_karta, kart_yarat,
+    yetkazib_berish_manzili, istaklar, istak_like_bos, catalog_html, kart_yarat,
     shaxsiy_malumot, xavsizlik
 )
 
 from app.user_viuw import (
-    update_order_status, customers, add_address
+    address_create_view, update_order_status, customers
 )
 
 from app.admin_viuw import (
@@ -56,7 +56,7 @@ urlpatterns = [
     path('shaxsiy_malumot/', shaxsiy_malumot, name='shaxsiy_malumotlar_user'),
     path('xavsizlik/', xavsizlik, name='xavsizlik'),
     path('mijozlar/', customers, name='mijozlar'),
-    path('add_address/', add_address, name='add_address'),
+    path('add_address/', address_create_view, name='add_address'),
     
     
     #shop cart 
@@ -68,7 +68,6 @@ urlpatterns = [
     #tolov usullari
     path('tolov_usullari/', tolov_usullari, name='tolov_usullari'),
     path('delete_card/<int:pk>/', delete_card, name='delete_card'),
-    path('yangi_karta/', yangi_karta, name='yangi_karta'),
     path('kart_yarat/', kart_yarat, name='kart_yarat'),
     
     #registratsiya

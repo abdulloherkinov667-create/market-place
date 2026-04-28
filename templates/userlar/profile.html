@@ -2,18 +2,16 @@
 
 {% block main %}
 <style>
-    /* PROFIL QISMI STILLARI */
+    /* ASOSIY KONTEYNER */
     .main-content {
       flex: 1;
       overflow-y: auto;
       background: #f8f9fa;
       scrollbar-width: none;
     }
-    
-    .main-content::-webkit-scrollbar {
-      display: none;
-    }
+    .main-content::-webkit-scrollbar { display: none; }
 
+    /* PROFIL TEPA QISMI */
     .profile-header {
       background: #fff;
       padding: 30px 20px;
@@ -23,125 +21,186 @@
 
     .avatar-wrapper {
       position: relative;
-      width: 100px;
-      height: 100px;
-      margin: 0 auto 15px;
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 12px;
     }
 
     .avatar-wrapper img {
-      width: 100%; 
-      height: 100%;
+      width: 100%; height: 100%;
       border-radius: 50%;
       border: 3px solid #7f4df2;
       object-fit: cover;
     }
 
-    .edit-icon {
-      position: absolute; 
-      bottom: 5px; 
-      right: 5px;
-      background: #7f4df2; 
-      color: #fff;
-      width: 28px; 
-      height: 28px; 
-      border-radius: 50%;
-      display: flex; 
-      align-items: center; 
-      justify-content: center;
-      font-size: 12px; 
-      border: 2px solid #fff;
-      cursor: pointer;
+    .edit-badge {
+      position: absolute; bottom: 2px; right: 2px;
+      background: #7f4df2; color: #fff;
+      width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; border: 2px solid #fff;
     }
 
-    .settings-list { 
-      background: #fff; 
-      margin-top: 10px; 
+    /* BOT STATISTIKA KARTASI */
+    .stats-card {
+        margin: 15px 15px;
+        background: linear-gradient(135deg, #7f4df2, #5a27ca);
+        border-radius: 16px;
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: white;
+        text-decoration: none;
+        box-shadow: 0 8px 20px rgba(127, 77, 242, 0.3);
+        animation: pulse-animation 2s infinite ease-in-out;
     }
 
-    /* Barcha menyu elementlari uchun umumiy stil */
+    @keyframes pulse-animation {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+        100% { transform: scale(1); }
+    }
+
+    /* MENYU RO'YXATI */
+    .settings-list { background: #fff; margin-bottom: 20px; }
+
     .settings-item {
       display: flex; 
       align-items: center; 
-      padding: 18px 20px;
+      padding: 16px 20px;
       border-bottom: 1px solid #f8f8f8; 
       cursor: pointer;
-      transition: background 0.2s;
       text-decoration: none !important;
+      transition: 0.2s;
     }
 
-    .settings-item:hover, .settings-item:active {
-      background: #f1f1f2;
+    .settings-item:active { background: #f1f1f2; }
+
+    .settings-item i:first-child { width: 32px; color: #7f4df2; font-size: 18px; }
+    .settings-item span { flex: 1; font-size: 15px; color: #1f2026; }
+    .settings-item .chevron { color: #ccc; font-size: 12px; }
+
+    /* MEHMONLAR UCHUN LOGIN OYNASI */
+    .guest-container {
+        padding: 50px 20px;
+        text-align: center;
+        background: #fff;
+        height: 100vh;
     }
 
-    .settings-item i:first-child { 
-      width: 35px; 
-      color: #7f4df2; 
-      font-size: 18px; 
+    .auth-btn {
+        display: block; width: 100%; padding: 16px;
+        margin-bottom: 12px; border-radius: 12px;
+        text-decoration: none; font-weight: 600; font-size: 15px;
     }
 
-    .settings-item span { 
-      flex: 1; 
-      font-size: 15px; 
-      color: #1f2026; 
-      font-weight: 400;
-    }
+    .btn-primary { background: #7f4df2; color: #fff; }
+    .btn-outline { background: #fff; color: #7f4df2; border: 2px solid #7f4df2; }
 
-    .settings-item .chevron { 
-      color: #ccc; 
-      font-size: 12px; 
-    }
-
-    .logout-item i:first-child {
-        color: #ff4d4d;
+    .guest-icon-circle {
+        width: 80px; height: 80px; background: #f0f0ff;
+        border-radius: 50%; display: flex; align-items: center;
+        justify-content: center; margin: 0 auto 20px;
     }
 </style>
 
 <div class="main-content">
-    <div class="profile-header">
-        <div class="avatar-wrapper">
-            <img src="https://ui-avatars.com/api/?name={{ request.user }}&background=7f4df2&color=fff" alt="User">
-            <div class="edit-icon"><i class="fa-solid fa-camera"></i></div>
+
+    {% if request.user.is_authenticated %}
+        <div class="profile-header">
+            <div class="avatar-wrapper">
+                <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=7f4df2&color=fff" alt="User">
+                <div class="edit-badge"><i class="fa-solid fa-camera"></i></div>
+            </div>
+            <h2 style="font-size: 20px; margin: 0;">{{ request.user.username }}</h2>
+            <p style="color: #8b8e99; font-size: 14px; margin: 5px 0 0;">{{ request.user.email|default:"Email biriktirilmagan" }}</p>
         </div>
-        <h2 style="font-size: 20px; margin: 0;">{{ request.user.username|default:"Mehmon" }}</h2>
-        <p style="color: #8b8e99; font-size: 14px; margin: 5px 0 0;">{{ request.user.email|default:"user@example.com" |capfirst }}</p>
-    </div>
 
-    <div class="settings-list">
-        <a href="{% url 'shaxsiy_malumotlar_user' %}" class="settings-item">
-            <i class="fa-solid fa-user-gear"></i>
-            <span>Shaxsiy ma'lumotlar</span>
-            <i class="fa-solid fa-chevron-right chevron"></i>
+        <a href="https://t.me/market_playesbot" target="_blank" class="stats-card">
+            <div>
+                <h4 style="margin:0; font-size: 16px;">Statistikani ko'rish</h4>
+                <p style="margin:4px 0 0; font-size: 12px; opacity: 0.9;">Telegram bot orqali boshqarish</p>
+            </div>
+            <i class="fa-solid fa-chart-line" style="font-size: 24px; opacity: 0.8;"></i>
         </a>
 
-        <a href="{% url 'home_page' %}" class="settings-item">
-            <i class="fa-solid fa-house-user"></i>
-            <span>Asosiy</span>
-            <i class="fa-solid fa-chevron-right chevron"></i>
-        </a>
+        <div class="settings-list">
+            <a href="{% url 'shaxsiy_malumotlar_user' %}" class="settings-item">
+                <i class="fa-solid fa-user-shield"></i>
+                <span>Shaxsiy ma'lumotlar</span>
+                <i class="fa-solid fa-chevron-right chevron"></i>
+            </a>
 
-        <a href="{% url 'yetkazib_berish_manzili' %}" class="settings-item">
-            <i class="fa-solid fa-location-dot"></i>
-            <span>Yetkazib berish manzillari</span>
-            <i class="fa-solid fa-chevron-right chevron"></i>
-        </a>
+            <a href="{% url 'order_html' %}" class="settings-item">
+                <i class="fa-solid fa-box-archive"></i>
+                <span>Mening buyurtmalarim</span>
+                <i class="fa-solid fa-chevron-right chevron"></i>
+            </a>
 
-        <a href="{% url 'tolov_usullari' %}" class="settings-item">
-            <i class="fa-solid fa-credit-card"></i>
-            <span>To'lov usullari</span>
-            <i class="fa-solid fa-chevron-right chevron"></i>
-        </a>
+            <a href="{% url 'istaklar' %}" class="settings-item">
+                <i class="fa-solid fa-heart"></i>
+                <span>Saralangan mahsulotlar</span>
+                <i class="fa-solid fa-chevron-right chevron"></i>
+            </a>
 
-        <a href="{% url 'xavsizlik' %}" class="settings-item">
-            <i class="fa-solid fa-shield-halved"></i>
-            <span>Xavfsizlik</span>
-            <i class="fa-solid fa-chevron-right chevron"></i>
-        </a>
-        
-        <a href="{% url 'logout_html' %}" class="settings-item logout-item">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            <span style="color: #ff4d4d;">Tizimdan chiqish</span>
-            <i class="fa-solid fa-chevron-right chevron"></i>
-        </a>
-    </div>
+            <a href="{% url 'Shoping_Cart_Html' %}" class="settings-item">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span>Savatdagi mahsulotlar</span>
+                <i class="fa-solid fa-chevron-right chevron"></i>
+            </a>
+
+            <a href="{% url 'yetkazib_berish_manzili' %}" class="settings-item">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <span>Yetkazib berish manzillari</span>
+                <i class="fa-solid fa-chevron-right chevron"></i>
+            </a>
+
+            <a href="{% url 'tolov_usullari' %}" class="settings-item">
+                <i class="fa-solid fa-credit-card"></i>
+                <span>To'lov usullari (Kartalar)</span>
+                <i class="fa-solid fa-chevron-right chevron"></i>
+            </a>
+
+            <a href="{% url 'xavsizlik' %}" class="settings-item">
+                <i class="fa-solid fa-lock"></i>
+                <span>Xavfsizlik</span>
+                <i class="fa-solid fa-chevron-right chevron"></i>
+            </a>
+
+            <a href="{% url 'qollab_quvatlash' %}" class="settings-item">
+                <i class="fa-solid fa-circle-question"></i>
+                <span>Qo'llab-quvvatlash</span>
+                <i class="fa-solid fa-chevron-right chevron"></i>
+            </a>
+
+            <a href="{% url 'logout_html' %}" class="settings-item" style="margin-top: 10px;">
+                <i class="fa-solid fa-power-off" style="color: #ff4d4d;"></i>
+                <span style="color: #ff4d4d; font-weight: 600;">Tizimdan chiqish</span>
+                <i class="fa-solid fa-chevron-right chevron"></i>
+            </a>
+        </div>
+
+    {% else %}
+        <div class="guest-container">
+            <div class="guest-icon-circle">
+                <i class="fa-solid fa-user-lock" style="font-size: 35px; color: #7f4df2;"></i>
+            </div>
+            <h2 style="color: #1f2026; margin-bottom: 8px;">Xush kelibsiz!</h2>
+            <p style="color: #8b8e99; font-size: 14px; margin-bottom: 30px; line-height: 1.4;">
+                Profilingizga kiring va barcha imkoniyatlardan cheklovsiz foydalaning.
+            </p>
+
+            <a href="{% url 'login_viuw' %}" class="auth-btn btn-primary">Kirish</a>
+            <a href="{% url 'registratsiya' %}" class="auth-btn btn-outline">Ro'yxatdan o'tish</a>
+            
+            <div style="margin-top: 25px;">
+                <a href="{% url 'home_page' %}" style="color: #7f4df2; text-decoration: none; font-size: 14px; font-weight: 500;">
+                    <i class="fa-solid fa-arrow-left"></i> Saytga qaytish
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
 </div>
 {% endblock main %}
