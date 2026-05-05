@@ -1,225 +1,201 @@
 {% extends 'base.html' %}
-
 {% block main %}
-
 {% load humanize %}
-
-
 
 <div class="main-content">
 
+  <!-- SLIDER -->
   <div class="slider-container">
 
     <div class="slider-wrapper" id="sliderWrapper">
 
       <div class="slide">
-
-        <div class="slide-img" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500');">
-
-          <div class="slide-content"><h2>TERRA PRO</h2></div>
-
+        <div class="slide-img" style="background-image: url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800');">
+          <div class="slide-content"><h2>Super chegirma</h2></div>
         </div>
+      </div>
 
+      <div class="slide">
+        <div class="slide-img" style="background-image: url('https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800');">
+          <div class="slide-content"><h2>Yangi krossovkalar</h2></div>
+        </div>
+      </div>
+
+      <div class="slide">
+        <div class="slide-img" style="background-image: url('https://images.unsplash.com/photo-1513708927688-890a1a7f1b1c?w=800');">
+          <div class="slide-content"><h2>Trend mahsulotlar</h2></div>
+        </div>
       </div>
 
     </div>
 
     <div class="dots">
-
       <div class="dot active"></div>
-
       <div class="dot"></div>
-
       <div class="dot"></div>
-
     </div>
 
   </div>
 
-
-
   <h3 style="padding: 0 15px; margin-bottom: 12px; font-size: 18px">Siz uchun tavsiyalar</h3>
 
-
-
   <div class="product-grid">
-
     {% for i in page_obj %}
-
     <div class="product-card" style="position: relative;">
 
-     
-
+      <!-- LIKE -->
       <form action="{% url 'istak_like_bos' %}" method="POST" style="position:absolute; top:10px; right:10px; z-index:2;">
-
         {% csrf_token %}
-
         <input type="hidden" name="product_id" value="{{ i.id }}">
-
-       
-
         <button type="submit" style="background:none; border:none; padding:0;">
-
           <i class="fa-heart wish-icon
-
             {% if i.id in liked_product_ids %}
-
               fa-solid active
-
             {% else %}
-
               fa-regular
-
             {% endif %}
-
           "></i>
-
         </button>
-
       </form>
 
-
-
       <!-- PRODUCT -->
-
       <a href="{% url 'product_details' i.slug %}" style="text-decoration: none; color: inherit; display: block;">
-
         {% if i.images.all %}
-
           <img class="product-img" src="{{ i.images.all.0.image.url }}" alt="{{ i.name }}" />
-
         {% endif %}
-
         <div class="product-info">
-
           <p class="product-title">{{ i.name |capfirst }}</p>
-
           <div class="price-container">
-
             <span class="price-now">{{ i.price|intcomma }} so'm</span>
-
           </div>
-
         </div>
-
       </a>
 
-
-
       <!-- CART -->
-
       <div style="padding: 0 8px 8px 8px;">
-
         <form action="{% url 'shoping_cart_create' %}" method="POST">
-
           {% csrf_token %}
-
           <input type="hidden" name="uzumproduct" value="{{ i.id }}">
-
           <input type="hidden" name="user" value="{{ request.user.id }}">
-
           <button type="submit" class="add-cart-btn">
-
             <i class="fa-solid fa-cart-plus"></i>
-
             <span>Savatga</span>
-
           </button>
-
         </form>
-
       </div>
 
-
-
     </div>
-
     {% endfor %}
-
   </div>
 
 </div>
 
-
-
 <style>
+/* SLIDER FIX */
+.slider-container {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  border-radius: 18px;
+  margin-bottom: 15px;
+}
 
-  .wish-icon {
+.slider-wrapper {
+  display: flex;
+  transition: transform 0.4s ease;
+}
 
-    font-size: 20px;
+.slide {
+  min-width: 100%;
+}
 
-    cursor: pointer;
+.slide-img {
+  width: 100%;
+  height: 190px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 18px;
+}
 
-    transition: transform 0.2s ease, color 0.2s ease;
+/* DOTS */
+.dots {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
 
-    color: #555;
+.dot {
+  width: 6px;
+  height: 6px;
+  background: #ccc;
+  border-radius: 50%;
+}
 
-    position: absolute;
+.dot.active {
+  width: 18px;
+  background: #fff;
+  border-radius: 10px;
+}
 
-    top: 10px;
+/* PRODUCT */
+.wish-icon {
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+  color: #555;
+}
 
-    right: 10px;
+.wish-icon.active {
+  color: #ff4d4d !important;
+  transform: scale(1.2);
+}
 
-  }
+.add-cart-btn {
+  width: 100%;
+  height: 40px;
+  background: transparent;
+  border: 1px solid #7f4df2;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #7f4df2;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
 
-
-
-  .wish-icon.active {
-
-    color: #ff4d4d !important;
-
-    transform: scale(1.2);
-
-  }
-
-
-
-  .add-cart-btn {
-
-    width: 100%;
-
-    height: 40px;
-
-    background: transparent;
-
-    border: 1px solid #7f4df2;
-
-    border-radius: 10px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 8px;
-
-    color: #7f4df2;
-
-    font-size: 14px;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition: all 0.2s ease;
-
-  }
-
-
-
-  .add-cart-btn:active {
-
-    background: #7f4df2;
-
-    color: #fff;
-
-    transform: scale(0.96);
-
-  }
-
+.add-cart-btn:active {
+  background: #7f4df2;
+  color: #fff;
+  transform: scale(0.96);
+}
 </style>
 
+<script>
+const wrapper = document.getElementById('sliderWrapper');
+const slides = document.querySelectorAll('.slide');
+const dots = document.querySelectorAll('.dot');
 
+let index = 0;
+
+function showSlide(i) {
+  wrapper.style.transform = `translateX(-${i * 100}%)`;
+  dots.forEach(dot => dot.classList.remove('active'));
+  dots[i].classList.add('active');
+}
+
+function nextSlide() {
+  index++;
+  if (index >= slides.length) index = 0;
+  showSlide(index);
+}
+
+setInterval(nextSlide, 3000);
+</script>
 
 {% endblock main %}
